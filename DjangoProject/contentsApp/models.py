@@ -2,21 +2,21 @@ from django.db import models
 
 # Create your models here.
 class Webtoon(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(null=True)
     name = models.CharField(max_length=200)
     description = models.TextField()
     cartoonist = models.ManyToManyField('Cartoonist')
-    content_provider = models.ForeignKey('ContentProvider')
-    tags = models.ManyToManyField('Tags')
+    content_provider = models.ForeignKey('ContentProvider', on_delete=models.PROTECT)
+    tags = models.ManyToManyField('Tag')
     url = models.CharField(max_length=200)
 
     def __str__(self):
         return f"{self.name} - {self.cartoonist}"
 
 class Cartoonist(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(null=True)
     name = models.CharField(max_length=100)
-    text = models.TextField() # 작가의말
+    text = models.TextField(null=True) # 작가의말
 
     def __str__(self):
         return self.name
@@ -41,7 +41,7 @@ class RatingSystem(models.Model):
         return self.rating
 
 class Episode(models.Model):
-    webtoon = models.ForeignKey('Webtoon')
+    webtoon = models.ForeignKey('Webtoon', on_delete=models.PROTECT)
     image = models.ImageField()
     number = models.IntegerField()
     title = models.TextField()
