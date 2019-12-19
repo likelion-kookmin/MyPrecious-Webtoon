@@ -48,9 +48,9 @@ def update_new_cartoon():
     for i in naver_cartoon_urls:
         res = requests.get(i)
         soup = BeautifulSoup(res.content, 'html.parser')
-        so = soup.select_one('div.comicinfo > div.detail > h2').get_text().split('\n')
-        cartoon_name = so[1].strip()
-        cartoonists = so[2].strip().split(' / ')
+        so = soup.select_one('div.comicinfo > div.detail > h2')
+        cartoon_name = str(so).split('<')[1].split('\t')[-1].strip()
+        cartoonists = soup.select_one('#content > div.comicinfo > div.detail > h2 > span.wrt_nm').get_text().strip().split(' / ')
         description = soup.select_one('div.comicinfo > div.detail > p:nth-child(2)')
         try:
             age = soup.select_one('div.comicinfo > div.detail > p.detail_info > span.age').get_text()
@@ -58,6 +58,13 @@ def update_new_cartoon():
             age = ""
         tags = soup.select_one('#content > div.comicinfo > div.detail > p.detail_info > span.genre').get_text().split(', ')
         image = soup.select_one('#content > div.comicinfo > div.thumb > a > img').get('src')
+
+        print("cartoon_name: ", cartoon_name)
+        print("cartoonists: ", cartoonists)
+        # print(description)
+        # print(age)
+        # print(tags)
+        # print(image)
 
         try:
             this_cartoon = Webtoon.objects.get(name=cartoon_name)
@@ -90,12 +97,19 @@ def update_new_cartoon():
                 tag_obj.save()
             this_cartoon.tags.add(tag_obj)
         this_cartoon.save()
-        print(cartoon_name)
-        print(cartoonists)
-        # print(description)
-        # print(age)
-        # print(tags)
-        # print(image)
+
+        if age:
+            if age == '전체연령가':
+                age = '전체연령가'
+            elif age == '12세 이용가':
+                age = '12세 이상 이용가'
+            elif age == '15세 이용가':
+                age = '15세 이상 이용가'
+            elif age == '18세 이용가':
+                age = '18세 이상 이용가'
+
+            this_cartoon.age_rating = RatingSystem.objects.get(rating=age)
+        
 
         print()
 
@@ -111,10 +125,29 @@ def update_my_model_data():
 
 @transaction.atomic
 def test():
-    try:
-        ContentProvider.objects.get(name='네이버웹툰')
-    except:
-        print("no")
+    # try:
+    #     ContentProvider.objects.get(name='네이버웹툰')
+    # except:
+    #     print("no")
+    i = 'https://comic.naver.com/webtoon/list.nhn?titleId=651673&weekday=sat'
+
+    res = requests.get(i)
+    soup = BeautifulSoup(res.content, 'html.parser')
+    so = soup.select_one('#content > div.comicinfo > div.detail > h2')
+
+    so = str(so).split('<')[1].split('\t')[-1].strip()
+    print(so)
+    # cartoon_name = so[1].strip()
+    # cartoonists = so[2].strip().split(' / ')
+    # description = soup.select_one('div.comicinfo > div.detail > p:nth-child(2)')
+    # try:
+    #     age = soup.select_one('div.comicinfo > div.detail > p.detail_info > span.age').get_text()
+    # except:
+    #     age = ""
+    # tags = soup.select_one('#content > div.comicinfo > div.detail > p.detail_info > span.genre').get_text().split(', ')
+    # image = soup.select_one('#content > div.comicinfo > div.thumb > a > img').get('src')
+    # print(so)
+
 
 
 if __name__ == "__main__":

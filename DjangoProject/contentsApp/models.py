@@ -8,6 +8,7 @@ class Webtoon(models.Model):
     cartoonists = models.ManyToManyField('Cartoonist')
     content_provider = models.ForeignKey('ContentProvider', on_delete=models.PROTECT)
     tags = models.ManyToManyField('Tag')
+    age_rating = models.ForeignKey('RatingSystem', on_delete=models.PROTECT, default=1)
     url = models.CharField(max_length=200)
 
     def __str__(self):
