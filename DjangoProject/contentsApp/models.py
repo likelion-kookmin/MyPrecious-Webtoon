@@ -5,13 +5,13 @@ class Webtoon(models.Model):
     image = models.ImageField(null=True)
     name = models.CharField(max_length=200)
     description = models.TextField()
-    cartoonist = models.ManyToManyField('Cartoonist')
+    cartoonists = models.ManyToManyField('Cartoonist')
     content_provider = models.ForeignKey('ContentProvider', on_delete=models.PROTECT)
     tags = models.ManyToManyField('Tag')
     url = models.CharField(max_length=200)
 
     def __str__(self):
-        return f"{self.name} - {self.cartoonist}"
+        return f"{self.name} - "
 
 class Cartoonist(models.Model):
     image = models.ImageField(null=True)
@@ -22,8 +22,9 @@ class Cartoonist(models.Model):
         return self.name
 
 class ContentProvider(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(null=True)
     name = models.CharField(max_length=100)
+    url = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.name
