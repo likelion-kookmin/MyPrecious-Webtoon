@@ -17,9 +17,12 @@ def set_content_providers():
     providers_list = ["네이버웹툰", "다음웹툰", "레진", "미소설", "미스터블루", "배틀코믹스", "저스툰", "케이툰", "탑툰", "투믹스"]
     
     for i in providers_list:
-        provider = ContentProvider()
-        provider.name = i
-        provider.save()
+        try:
+            ContentProvider.objects.get(name=i)
+        except:
+            provider = ContentProvider()
+            provider.name = i
+            provider.save()
 
 
 @transaction.atomic
@@ -28,14 +31,18 @@ def set_rating_systems():
     ratings_list = ["미등록", "전체연령가", "12세 이상 이용가", "15세 이상 이용가", "18세 이상 이용가"] # 만나이?, 한국나이?      네이버는 만나이https://m.help.naver.com/support/contents/contentsView.help?contentsNo=1766&lang=ko
     
     for i in ratings_list:
-        rating = RatingSystem()
-        rating.rating = i
-        rating.save()
+        try:
+            AgeRatingSystem.objects.get(rating=i)
+        except:
+            rating = AgeRatingSystem()
+            rating.rating = i
+            rating.save()
     
 @transaction.atomic
 def update_new_cartoon():
     update_naver()
     update_daum()
+    update_lezhin()
 
 @transaction.atomic
 def update_naver():
@@ -115,7 +122,7 @@ def update_naver():
             elif age == '18세 이용가':
                 age = '18세 이상 이용가'
 
-            this_cartoon.age_rating = RatingSystem.objects.get(rating=age)
+            this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
         this_cartoon.save()
         
         # print("cartoon_name: ", cartoon_name)
@@ -214,7 +221,7 @@ def update_daum():
                 elif age == 19:
                     age = '18세 이상 이용가'
 
-                this_cartoon.age_rating = RatingSystem.objects.get(rating=age)
+                this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
             this_cartoon.save()
             
             # print("cartoon_name: ", cartoon_name)
@@ -228,12 +235,105 @@ def update_daum():
             # print()
 
 
+
 @transaction.atomic
-def update_my_model_data():
-    datas = MyModel.objects.all()
+def update_lezhin():
+    provider_obj = ContentProvider.objects.get(name='다음웹툰')
+    datas = []
+
+    day = 'http://webtoon.daum.net/data/pc/webtoon/list_serialized/'
+    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+    for d in days:
+        res = requests.get(day + d).json()
+        datas.append(res['data'])
+
+    finish = 'http://webtoon.daum.net/data/pc/webtoon/list_finished/'
+    res = requests.get(finish).json()
+    print(res['result']['status'])
+    datas.append(res['data'])
+    
     for data in datas:
-        # 하고 싶은거 하고 
-        data.save()
+        
+        for i in data:
+            cartoon_name = i['title']
+            # print("cartoon_name: ", cartoon_name)
+            cartoonists = []
+            for j in i['cartoon']['artists']:
+                cartoonists.append(j['penName'])
+            # print(cartoonists)
+
+            try:
+                description = i['introduction']
+            except:
+                description = ""
+
+            age = i['ageGrade']
+            tags = []
+            try:
+                for j in i['cartoon']['genres']:
+                    tags.append(j['name'])
+            except:
+                pass
+            url_name = i['nickname']
+            image = i['pcThumbnailImage']['url']
+
+            try:
+                this_cartoon = Webtoon.objects.get(name=cartoon_name, content_provider=provider_obj)
+                print("new cartoon", cartoon_name)
+            except:
+                this_cartoon = Webtoon()
+                this_cartoon.name = cartoon_name
+                this_cartoon.content_provider = provider_obj
+            this_cartoon.description = description
+            this_cartoon.url = 'http://webtoon.daum.net/webtoon/view/' + url_name
+            this_cartoon.save()
+
+            for cartoonist_name in cartoonists:
+                try:
+                    cartoonist_obj = Cartoonist.objects.get(name=cartoonist_name)
+                except:
+                    print("new cartoonist", cartoonist_name)
+                    cartoonist_obj = Cartoonist()
+                    cartoonist_obj.name = cartoonist_name
+                    cartoonist_obj.save()
+                this_cartoon.cartoonists.add(cartoonist_obj)
+            this_cartoon.save()
+
+            for tag in tags:
+                try:
+                    tag_obj = Tag.objects.get(tag_name=tag)
+                except:
+                    print("new tag", tag)
+                    tag_obj = Tag()
+                    tag_obj.tag_name = tag
+                    tag_obj.save()
+                this_cartoon.tags.add(tag_obj)
+            this_cartoon.save()
+
+            if age is not None:
+                if age == 0:
+                    age = '전체연령가'
+                elif age == 12:
+                    age = '12세 이상 이용가'
+                elif age == 15:
+                    age = '15세 이상 이용가'
+                elif age == 19:
+                    age = '18세 이상 이용가'
+
+                this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
+            this_cartoon.save()
+            
+            # print("cartoon_name: ", cartoon_name)
+            # print("cartoonists: ", cartoonists)
+            # print(description)
+            # print(age)
+            # print(this_cartoon.age_rating)
+            # print(tags)
+            # print(image)
+
+            # print()
+
 
 
 @transaction.atomic
@@ -268,6 +368,7 @@ if __name__ == "__main__":
     # set_rating_systems()
     # update_new_cartoon()
     # update_naver()
-    update_daum()
+    # update_daum()
+    update_lezhin()
     # update_my_model_data()
     # test()

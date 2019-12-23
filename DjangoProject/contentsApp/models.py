@@ -8,11 +8,14 @@ class Webtoon(models.Model):
     cartoonists = models.ManyToManyField('Cartoonist')
     content_provider = models.ForeignKey('ContentProvider', on_delete=models.PROTECT)
     tags = models.ManyToManyField('Tag')
-    age_rating = models.ForeignKey('RatingSystem', on_delete=models.PROTECT, default=1)
+    age_rating = models.ForeignKey('AgeRatingSystem', on_delete=models.PROTECT, default=1)
     url = models.CharField(max_length=200)
 
     def __str__(self):
-        return f"{self.name} - "
+        s = [str(i) for i in self.cartoonists.all()]
+        # for i in self.cartoonists.all():
+        #     s.append()
+        return f"{self.name} - {', '.join(s)} by {self.content_provider}"
 
 class Cartoonist(models.Model):
     image = models.ImageField(null=True)
@@ -36,7 +39,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag_name
 
-class RatingSystem(models.Model):
+class AgeRatingSystem(models.Model):
     rating = models.CharField(max_length=10)
 
     def __str__(self):
