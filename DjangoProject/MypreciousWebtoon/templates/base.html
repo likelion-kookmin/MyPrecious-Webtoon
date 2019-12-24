@@ -7,14 +7,18 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'home' %}">home</a>
-        <a href="{% url 'accounts:login' %}">login</a>
-        <a href="{% url 'accounts:logout' %}">logout</a>
-        <a href="{% url 'accounts:signup' %}">signup</a>
-        <a href="{% url 'home' %}">kakao login</a>
-    </nav>
-    {% block contents %}
-    {% endblock %}
+<nav>
+    <a href="{% url 'home' %}">home</a>
+    {% if user.is_authenticated %}
+    {{ user.email }}
+    <a href="{% url 'accounts:logout' %}">logout</a>
+    {% else %}
+    <a href="{% url 'accounts:login' %}">login</a>
+    <a href="{% url 'accounts:signup' %}">signup</a>
+    {% endif %}
+    <a href="{% url 'home' %}">kakao login</a>
+</nav>
+{% block contents %}
+{% endblock %}
 </body>
 </html>

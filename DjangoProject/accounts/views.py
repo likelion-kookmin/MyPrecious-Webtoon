@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import SingupForm, LoginForm
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import get_user_model
+from django.contrib.auth import login, logout
 from django.template import RequestContext
 
 
+User = get_user_model()
+
+
 # Create your views here.
-def signup(request):
+def signupView(request):
     if request.method == "POST":
         form = SingupForm(request.POST)
         if form.is_valid():
@@ -22,7 +25,7 @@ def signup(request):
     return render(request, 'signup.html', ctx)
 
 
-def login(request):
+def loginView(request):
     ctx = dict()
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -37,3 +40,8 @@ def login(request):
         'form': form
     }
     return render(request, 'login.html', ctx)
+
+
+def logoutView(request):
+    logout(request)
+    return redirect('home')

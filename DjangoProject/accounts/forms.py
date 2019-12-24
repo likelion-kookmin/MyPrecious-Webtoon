@@ -35,7 +35,7 @@ class SingupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'confirm_password')
+        fields = ('email', 'password', 'confirm_password', 'date_of_birth')
 
     def clean(self):
         cleaned_data = super(SingupForm, self).clean()

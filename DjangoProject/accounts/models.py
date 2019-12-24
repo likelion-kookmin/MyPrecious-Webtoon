@@ -6,9 +6,7 @@ from django.dispatch import receiver
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth,
-                    nickname="", gender="", image=None,
-                    password=None):
+    def create_user(self, email, date_of_birth, password=None, **kwargs):
         if not email:
             raise ValueError('Users must have an email address')
 
