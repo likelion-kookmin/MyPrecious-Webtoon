@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-AUTH_USER_MODEL = "accounts.CustomUser"
+AUTH_USER_MODEL = "accountApp.CustomUser"
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'contentsApp',
-    'accounts',
+    'accountApp',
 ]
 
 MIDDLEWARE = [
