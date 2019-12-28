@@ -1,0 +1,15 @@
+{% extends "project_base.html" %}
+
+
+{% block title %}
+로그인
+{% endblock %}
+
+{% block contents %}
+<h1>signin</h1>
+<form method="post" actions="{% url 'accounts:login' %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="로그인">
+</form>
+{% endblock %}
