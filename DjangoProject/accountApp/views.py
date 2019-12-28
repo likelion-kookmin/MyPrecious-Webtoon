@@ -45,12 +45,3 @@ def loginView(request):
 def logoutView(request):
     logout(request)
     return redirect('home')
-
-
-def deleteUsers(request):
-    users = User.objects.all()
-    for user in users:
-        if user.email != "root@root.com":
-            user.delete()
-
-    return redirect('home')
