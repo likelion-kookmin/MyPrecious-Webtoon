@@ -21,7 +21,7 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
     class Meta:
         model = User
-        fields = ('email', 'date_of_birth')
+        fields = ('email', )
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -49,7 +49,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'date_of_birth', 'is_active', 'is_admin')
+        fields = ('email', 'password', 'is_active', 'is_admin')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -64,7 +64,7 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'date_of_birth', 'is_admin')
+    list_display = ('email', 'is_admin')
     list_filter = ('is_admin',)
 
     fieldsets = (
@@ -76,7 +76,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2'),
+            'fields': ('email', 'password1', 'password2'),
         }),
     )
 
