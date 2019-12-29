@@ -18,12 +18,15 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+import contentsApp.views
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="home.html"), name="home"),
     path('admin/', admin.site.urls),
     path('account/', include('accountApp.urls')),
     path('accounts/', include('allauth.urls')),
+    path('detail/<int:id>', contentsApp.views.webtoon_detail, name='datail'),
+    path('all', contentsApp.views.list_test),
 ]
 
 # media file serve

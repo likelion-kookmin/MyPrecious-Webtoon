@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ webtoon.name }} - 마프웹</title>
+</head>
+<body>
+    <img src="{{ webtoon.image }}" alt="{{ webtoon.name}} 썸네일">
+    <br>
+    웹툰명: {{ webtoon.name}}
+    <br>
+    <br>
+    설명: {{ webtoon.description|safe }}
+    <br>
+    {% for i in webtoon.cartoonists.all %}
+    {{ i }}
+    {% endfor %}
+    <br>
+    {{ webtoon.age_rating }}
+    <a href="{{ webtoon.url }}">보러가기</a>
+    <br>
+    {% for i in webtoon.tags.all %}
+    {{ i }}
+    {% endfor %}
+    <br>
+    {{ webtoon.content_provider }}
+
+    <br><br>
+    {{ }}
+
+
+</body>
+</html>
