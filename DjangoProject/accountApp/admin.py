@@ -70,6 +70,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Permissions', {'fields': ('is_admin',)}),
+        ('Friends', {'fields':('following', 'followers',)})
     )
 
     add_fieldsets = (

@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 # Create your models here.
@@ -13,13 +11,12 @@ class CustomUserManager(BaseUserManager):
         # kakao_profile을 기반으로 정보 입력
         kakao_properties = extra_data.get("properties")
         profile.nickname = kakao_properties.get('nickname')
-        profile.get_image_from_url(kakao_properties.get('thumbnail_image'))
+        profile.get_image_from_url(kakao_properties.get('profile_image'))
 
         kakao_account = extra_data.get("kakao_account")
         profile.gender = 'M' if kakao_account.get('gender') == "male" else 'F'
-        age_range = kakao_account.get('age_range')
-        profile.age_range = age_range[:2] if age_range else age_range
-        print(age_range)
+        age_range = kakao_account.get('age_range').split("~")[0]
+        profile.age_range = age_range[:2] if int(age_range) < 60 else 60
         profile.date_of_birth = kakao_account.get('birthday')
         profile.save()
         user.save()
@@ -60,6 +57,9 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    followers = models.ManyToManyField("self", related_name="followers")
+    following = models.ManyToManyField("self", related_name="following")
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -86,19 +86,19 @@ class Profile(models.Model):
     )
 
     AGE_RANGE = (
-        (10, "10"),
-        (20, "20"),
-        (30, "30"),
-        (40, "40"),
-        (50, "50"),
-        (60, "60"),
+        (10, "10대"),
+        (20, "20대"),
+        (30, "30대"),
+        (40, "40대"),
+        (50, "50대"),
+        (60, "60대 이상"),
     )
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     nickname = models.CharField(blank=True, null=True, max_length=30)
     gender = models.CharField(blank=True, null=True, max_length=1, choices=GENDER_CHOICES)
     image = models.ImageField(blank=True, null=True)
-    age_range = models.CharField(blank=True, null=True, max_length=2, choices=AGE_RANGE)
+    age_range = models.PositiveSmallIntegerField(blank=True, null=True, choices=AGE_RANGE)
     date_of_birth = models.DateField(blank=True, null=True)
 
     def __str__(self):
@@ -117,7 +117,8 @@ class Profile(models.Model):
 
     def get_values(self):
         from django.forms.models import model_to_dict
-        return model_to_dict(self, fields=[field.name for field in self._meta.fields])
+        items = model_to_dict(self, fields=[field.name for field in self._meta.fields])
+        return items
 
 
 # allauth adapter로 처리
