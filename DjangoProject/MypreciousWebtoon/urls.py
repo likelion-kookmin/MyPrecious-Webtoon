@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('accountApp.urls')),
     path('accounts/', include('allauth.urls')),
+    path('contents/', include('contentsApp.urls')),
 ]
 
 # media file serve

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+    유저 목록
+{% endblock %}
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">{{ user.profile.nickname }}({{ user.email }})님의 프로필</h1>
+    {% include "partial/_user.html" with person=user %}
+
+    <br>
+    <h1 class="title">followers</h1>
+    <div class="columns is-multiline margin-top">
+        {% include "partial/_userList.html" with people=followers checkList=following_ids template_id=1 only%}
+    </div>
+
+    <br>
+    <h1 class="title">following</h1>
+    <div class="columns is-multiline margin-top">
+        {% include "partial/_userList.html" with people=following checkList=following_ids template_id=2 only%}
+    </div>
+{% endblock %}
+
+{% block extra_body %}
+{% endblock %}

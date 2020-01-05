@@ -1,45 +1,74 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import SingupForm, LoginForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
-from django.template import RequestContext
-
+from django.template.loader import render_to_string
 
 User = get_user_model()
 
 
 # Create your views here.
-def signupView(request):
-    if request.method == "POST":
-        form = SingupForm(request.POST)
-        if form.is_valid():
-            new_user = User.objects.create_user(**form.cleaned_data)
-            login(request, new_user)
-            return redirect("home")
+def follow(request):
+    message = ("unfollow", "follow",)
+    isFollowing = False
 
-    form = SingupForm()
-    ctx = {
-        'form': form
-    }
-    return render(request, 'signup.html', ctx)
-
-
-def loginView(request):
     ctx = dict()
     if request.method == "POST":
-        form = LoginForm(request.POST)
-        # clean에 정의된 대로 user_id를 저장한다.
-        if form.is_valid():
-            # 저장된 user를 세션의 user에 저장한다.
-            request.session['user'] = form.user_id
-            return redirect("home")
+        user = request.user
 
-    form = LoginForm()
+        following_id = request.POST.get("id")
+        if user.id is not following_id:
+            following = get_object_or_404(User, pk=following_id)
+            print(following.followers.all())
+            if user.following.filter(pk=following_id).exists():
+                isFollowing = False
+                following.followers.remove(user)
+                user.following.remove(following)
+            else:
+                isFollowing = True
+                following.followers.add(user)
+                user.following.add(following)
+            print(user.following.all())
+            print(user.followers.all())
+            # following_list = user.following.values_list('id', flat=True)
+            messages.info(request, message[isFollowing])
+            ctx.update({"person": following, "isFollowing": isFollowing})
+
+    # partial을 rendering 한 결과를 전송.
+    html = render_to_string("partial/_user.html", ctx)
+    msg = render_to_string("messages.html", {"messages":messages.get_messages(request)})
     ctx = {
-        'form': form
+        "target": f"{following.id}",
+        "data": html,
+        "msg": msg
     }
-    return render(request, 'login.html', ctx)
+    return JsonResponse(ctx)
+
+
+def profile(request):
+    user = request.user
+    following_list = user.following.all()
+    follower_list = user.followers.all()
+
+    print(following_list)
+    print(follower_list)
+
+    ctx = {
+        'user': request.user,
+        'following': following_list,
+        'following_ids': following_list.values_list('id', flat=True),
+        'followers': follower_list,
+        'follower_ids': follower_list.values_list('id', flat=True),
+    }
+    return render(request, "profile.html", ctx)
+
+
+def userListView(request):
+    following_list = request.user.following.values_list('id', flat=True)
+    ctx = {"users": User.objects.select_related("profile").all().exclude(id=request.user.id)}
+    ctx.update({"following": list(following_list)})
+    return render(request, "userList.html", ctx)
 
 
 def logoutView(request):

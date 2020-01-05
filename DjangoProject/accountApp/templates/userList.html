@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}
+    유저 목록
+{% endblock %}
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">{{ user.profile.nickname }}({{ user.email }})님의 추천 친구 목록</h1>
+    {% include "partial/_userList.html" with people=users checkList=following only %}
+{% endblock %}
+
+
+
+{% block extra_body %}
+    <script>
+        var template_id = '{{ template_id|default:'' }}';
+
+        window.onload = function () {
+            follow_buttons = document.querySelectorAll(".content button");
+            follow_buttons.forEach(button => {
+                button.addEventListener('click', follow);
+            });
+        };
+
+        function follow(event) {
+            url = "{% url 'accounts:follow' %}";
+            id = event.target.name.toString();
+            formData = new URLSearchParams();
+            formData.set("id", id);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    {#'Content-Type': 'application/json',#}
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie("csrftoken"),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            }).then((res) => {
+                res.json()
+                    .then((json) => {
+                            console.log(json);
+                            render(json["target"], json["data"], json["msg"], template_id);
+                        }
+                    )
+            }).catch(err => console.error(err));
+        }
+
+        function render(target, data, messages, template_id = 1) {
+            target_dom = document.querySelector(`#user-${target}${template_id}`);
+            target_dom.outerHTML = data;
+            target_button = document.querySelector(`#btn-${target}${template_id}`);
+            target_button.addEventListener('click', follow);
+
+            message_dom = document.querySelector(`#messages`);
+            message_dom.outerHTML = messages;
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+    </script>
+{% endblock %}

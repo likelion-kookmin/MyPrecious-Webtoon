@@ -67,7 +67,10 @@ INSTALLED_APPS = [
 
     'contentsApp',
     'accountApp',
-
+    
+    # follow, subscribe 등의 활동들을 화면에 반영하기 위함
+    'django_render_partial',
+    
     # allauth needs below apps.
     'django.contrib.sites',
 

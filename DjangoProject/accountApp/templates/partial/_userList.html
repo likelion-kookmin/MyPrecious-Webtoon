@@ -1,0 +1,8 @@
+{# 유저 정보를 담은 카드 리스트를 만드는 템플릿 #}
+<div id="userList{{ template_id }}" class="columns is-multiline margin-top">
+    {{ people }}
+    {{ checkList }}
+    {% for person in people %}
+        {% include "partial/_user.html" %}
+    {% endfor %}
+</div>
