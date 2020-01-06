@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import *
+from contentsApp.models import *
 
 # Create your views here.
 def webtoon_detail(request, id):

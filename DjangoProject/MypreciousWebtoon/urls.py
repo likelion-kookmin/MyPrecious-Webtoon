@@ -25,7 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('accountApp.urls')),
     path('accounts/', include('allauth.urls')),
-    path('detail/<int:id>', contentsApp.views.webtoon_detail, name='datail'),
+    path('contents/', include('contentsApp.urls')),
+    # path('detail/<int:id>', contentsApp.views.webtoon_detail, name='datail'),
     path('all', contentsApp.views.list_test),
 ]
 

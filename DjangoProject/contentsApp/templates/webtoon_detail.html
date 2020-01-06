@@ -1,35 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <title>{{ webtoon.name }} - 마프웹</title>
 </head>
+
 <body>
-    <img src="{{ webtoon.image }}" alt="{{ webtoon.name}} 썸네일">
-    <br>
-    웹툰명: {{ webtoon.name}}
-    <br>
-    <br>
-    설명: {{ webtoon.description|safe }}
-    <br>
-    {% for i in webtoon.cartoonists.all %}
-    {{ i }}
-    {% endfor %}
-    <br>
-    {{ webtoon.age_rating }}
-    <a href="{{ webtoon.url }}">보러가기</a>
-    <br>
-    {% for i in webtoon.tags.all %}
-    {{ i }}
-    {% endfor %}
-    <br>
-    {{ webtoon.content_provider }}
+    <div class="container" style="margin-top:50px;">
+        <div class="row">
+            <div class="col">
+                <div class="episode__aside">
+                    <div class="episode__thumbnail">
+                        <br><br><br>
+                        <img src="https://pbs.twimg.com/media/D5o4PC2U8AE8utH.jpg" alt="{{ webtoon.name}} 썸네일"
+                            class="img-deco" style="width:250px; height:300px;">
+                        <br><br>
+                        <a class="btn btn-secondary" href="{{ webtoon.url }}" role="button"
+                            style="margin-left:75px;">보러가기</a>
+                    </div>
 
-    <br><br>
-    {{ }}
+                </div>
+            </div>
+            <div class="col-6" style="border-right:1px solid gray;">
+                <main class="episode__main">
+                    <div class="episode__header">
+                        <h1><b style="font-size: xx-large; color: #2E64FE;">{{webtoon.name}}</b></h1>
+                        <br>
+                        <div>
+                            <dl class="episode__author">
+                                <div style='text-align: inline;'><b>글/그림</b>&nbsp;
+                                    {% for i in webtoon.cartoonists.all %}
+                                    {{ i }}
+                                    {% endfor %}&nbsp;<b>연재</b>&nbsp;{{ webtoon.content_provider }}&nbsp;&nbsp;&nbsp;&nbsp;<b>연령대</b>&nbsp;{{ webtoon.age_rating }}
 
+                                </div>
+                            </dl>
+                            <hr>
+                        </div>
+
+                        <div class="episode__summary">
+                            <b>줄거리</b><br>
+                            {{ webtoon.description|safe }}
+                        </div>
+                        <hr>
+                        <span class="episode__tags">
+
+                            {% for i in webtoon.tags.all %}<button type="button" class="btn btn-outline-secondary"
+                                style="width: 8rem;height:2rem;margin-right:0.5rem;">
+                                <h6>
+                                    <p>#{{ i }}</p>
+                                </h6>
+                                {% endfor %}
+                            </button>
+
+
+                        </span>
+                        <br><br>
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                                    role="tab" aria-controls="nav-home" aria-selected="true">별점</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                                    role="tab" aria-controls="nav-profile" aria-selected="false">리뷰</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                aria-labelledby="nav-home-tab"><br><br><b>나의 별점</b><br><br><b>마프웹
+                                    별점</b><br><br><b>{{ webtoon.content_provider }} 별점</b></div>
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                aria-labelledby="nav-profile-tab">
+                                <!-- {% for comment in comments %}
+                                <h5>
+                                    <div class="rounded text-break"
+                                        style="width: 40rem;min-height:2rem;border-color:#A6A6A7;">
+                                        <div class="row">
+                                            <div class="col-4" style="text-align: center;line-height:2rem;">
+                                                {{comment.writer}}&nbsp;&nbsp;</div>
+                                            <div class="col-8">{{comment.content}}</div>
+                                        </div>
+                                </h5>
+
+                                {% if user.is_authenticated %}
+                                {% if user.email == comment.writer %}
+
+                                <details>
+                                    <summary>수정하기&nbsp<a>/</a>&nbsp<a role="button" onclick="delUrll()"> 삭제</a>
+                                        <hr>
+                                    </summary>
+
+                                    </script>
+                                    <form action="{% url 'b_modify' comment.id %}" method="POST">
+                                        {% csrf_token %}
+
+                                        <textarea class="rounded" name='modify_comment' id="" cols="82"
+                                            placeholder="write your content">{{comment.content}}</textarea>
+                                        <br>
+                                        <br>
+                                        <input type="submit" value='수정완료' class="submit_bt"
+                                            style="rgb(250, 250, 249); border: 1px white; border-bottom: 2.8px solid  rgb(12, 12, 12);">
+
+
+                                    </form>
+                                </details>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor%} -->
+                            </div>
+
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+            <div class="col" style="color:#2E64FE;">
+                <br><br><br><br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b>
+            </div>
+
+
+
+        </div>
+    </div>
+    
 
 </body>
+
 </html>
