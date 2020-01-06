@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>무작위 웹툰 평가하기</title>
+        <style>
+            div{
+                width : 550 px;
+                height: 300 px;
+                padding: 50 px;
+                border: 1px solid gray;
+                margin: 100 px;
+            }
+        </style>
+    </head>
+<h1>무작위 웹툰 평가하기</h1>
+<a href ="/">홈으로 가기</a>
+{% for wt in wts%}
+<div>
+이미지 : {{wt.image}} <br>
+이름 : {{wt.name}} <br>
+설명충 : <a>{{wt.description}}</a> <br>
+작가 : {% for ct in wt.cartoonists.all %}{{ct}} {% endfor %}<br>
+플랫폼 : {{wt.content_provider}} <br>
+장르 : {% for tag in wt.tags.all %}{{tag}} {% endfor %}<br>
+연령 : {{wt.age_rating}} <br>
+이동하기 : <a href="{{wt.url}}">만화 보러가기</a><br>
+</div>
+{% endfor %}
+
+{%if wts.has_previous%}
+<a href="?page=1">맨 앞으로</a>
+<a href="?page={{wts.previous_page_number}}">이전으로</a>
+{% endif %}
+
+<span>{{wts.number}}</span>
+<span>/</span>
+<span>{{wts.paginator.num_pages}}</span>
+
+{%if wts.has_next%}
+<a href="?page={{wts.next_page_number}}">다음으로</a>
+<a href="?page={{wts.paginator.num_pages}}">맨 뒤로</a>
+{%endif%}
+
+
+</html>

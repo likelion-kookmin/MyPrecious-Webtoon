@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Webtoon(models.Model):
-    image = models.TextField()
+    image = models.TextField(null=True)
     name = models.CharField(max_length=200)
     description = models.TextField()
     cartoonists = models.ManyToManyField('Cartoonist')
@@ -25,7 +25,7 @@ class Webtoon(models.Model):
         return is_free
 
 class Cartoonist(models.Model):
-    image = models.TextField()
+    image = models.TextField(null=True)
     name = models.CharField(max_length=100)
     text = models.TextField(null=True) # 작가의말
 
@@ -33,7 +33,7 @@ class Cartoonist(models.Model):
         return self.name
 
 class ContentProvider(models.Model):
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, default = '')
     name = models.CharField(max_length=100)
     url = models.CharField(max_length=100, default='')
 
@@ -54,7 +54,7 @@ class AgeRatingSystem(models.Model):
 
 class Episode(models.Model):
     webtoon = models.ForeignKey('Webtoon', on_delete=models.PROTECT)
-    image = models.TextField()
+    image = models.TextField(default = '')
     number = models.IntegerField()
     title = models.TextField()
     created = models.DateField()

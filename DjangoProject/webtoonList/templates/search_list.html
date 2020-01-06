@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title></title>
+        <style>
+            div{
+                width : 550 px;
+                height: 300 px;
+                padding: 50 px;
+                border: 1px solid gray;
+                margin: 100 px;
+            }
+        </style>
+    </head>
+    <a href ="/">홈으로 가기</a>
+
+<h1>"{{search_word}}"으로 검색된 웹툰들</h1>
+{% for wt in wts_search_by_name%}
+<div>
+이미지 : {{wt.image}} <br>
+이름 : {{wt.name}} <br>
+설명충 : {{wt.description}} <br>
+작가 : {% for ct in wt.cartoonists.all %}{{ct}} {% endfor %}<br>
+플랫폼 : {{wt.content_provider}} <br>
+장르 : {% for tag in wt.tags.all %}{{tag}} {% endfor %}<br>
+연령 : {{wt.age_rating}} <br>
+이동하기 : <a href="{{wt.url}}">만화 보러가기</a><br>
+</div>
+{% endfor %}
+
+<!--작품 페이지 네이터-->
+{%if wts_search_by_name.has_previous%}
+<a href="?page=1">맨 앞으로</a>
+<a href="?page={{wts_search_by_name.previous_page_number}}">이전으로</a>
+{% endif %}
+
+<span>{{wts_search_by_name.number}}</span>
+<span>/</span>
+<span>{{wts_search_by_name.paginator.num_pages}}</span>
+
+{%if wts_search_by_name.has_next%}
+<a href="?page={{wts_search_by_name.next_page_number}}">다음으로</a>
+<a href="?page={{wts_search_by_name.paginator.num_pages}}">맨 뒤로</a>
+{%endif%}
+
+
+
+<br>
+<h1>"{{search_word}}"으로 검색된 작가들</h1>
+{% for wt in wts_search_by_cartoonists%}
+<div>
+이미지 : {{wt.image}} <br>
+이름 : {{wt.name}} <br>
+설명충 : {{wt.description}} <br>
+작가 : {% for ct in wt.cartoonists.all %}{{ct}} {% endfor %}<br>
+플랫폼 : {{wt.content_provider}} <br>
+장르 : {% for tag in wt.tags.all %}{{tag}} {% endfor %}<br>
+연령 : {{wt.age_rating}} <br>
+이동하기 : <a href="{{wt.url}}">만화 보러가기</a><br>
+</div>
+{% endfor %}
+
+</html>
