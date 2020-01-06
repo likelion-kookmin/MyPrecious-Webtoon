@@ -4,15 +4,6 @@
 홈
 {% endblock %}
 
-{% block content %}
-{% if user.is_authenticated %}
-    <ul>
-    {% for key, value in user.profile.get_values.items %}
-        <li>{{ key }} : {{ value }}</li>
-    {% endfor %}
-    </ul>
-    {% if user.profile.image %}
-        <img src="{{ user.profile.image.url }}" alt="">
-    {% endif %}
-{% endif %}
+{% block contents %}
+Hello
 {% endblock %}

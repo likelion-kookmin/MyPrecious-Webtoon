@@ -3,8 +3,6 @@ import django
 from django.db import transaction
 import requests
 from bs4 import BeautifulSoup
-import datetime
-from django.shortcuts import get_object_or_404
 
 # django setting 파일 설정하기 및 장고 셋업
 cur_dir = os.path.dirname(__file__)
@@ -40,25 +38,15 @@ def set_rating_systems():
             rating.rating = i
             rating.save()
     
-
+@transaction.atomic
 def update_new_cartoon():
     update_naver()
     update_daum()
-    # update_lezhin()
-
-# @transaction.atomic
-def update_new_episode():
-    for i in Webtoon.objects.all():
-        if i.content_provider == ContentProvider.objects.get(name='네이버웹툰'):
-            # first_init_episode_naver(i)
-            # update_episode_naver(i)
-            pass
-        elif i.content_provider == ContentProvider.objects.get(name='다음웹툰'):
-            update_episode_daum(i)
-
+    update_lezhin()
 
 @transaction.atomic
 def update_naver():
+    # naver = 'https://comic.naver.com/webtoon/weekday.nhn'
     naver = 'https://comic.naver.com/webtoon/creation.nhn?view=list'
     naver_cartoon_urls = []
     res = requests.get(naver)
@@ -92,13 +80,11 @@ def update_naver():
             print()
         image = soup.select_one('#content > div.comicinfo > div.thumb > a > img').get('src')
 
-        is_new = False
         try:
             this_cartoon = Webtoon.objects.get(name=cartoon_name, content_provider=provider_naver)
         except:
             this_cartoon = Webtoon()
             this_cartoon.content_provider = provider_naver
-            is_new = True
         this_cartoon.name = cartoon_name
         this_cartoon.description = str(description)
         this_cartoon.url = i
@@ -139,17 +125,14 @@ def update_naver():
             this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
         this_cartoon.save()
         
-        if(is_new):
-            first_init_episode_naver(this_cartoon)
-
         # print("cartoon_name: ", cartoon_name)
-        # print("cartoonists: ", cartoonists)
+        print("cartoonists: ", cartoonists)
         # print(description)
-        # print(age)
-        # print(tags)
+        print(age)
+        print(tags)
         # print(image)
 
-        print('.', end='')
+        print()
     #Todo: 까뱅 등 일부 태그 가져오기 안됌, 컷툰 스마트툰과 같은 요소 태그로만들기, 유료화수, 이미지 리소스 url을 다운받아서 디비에 업로드, 요일과 연재중인지
 
 
@@ -197,8 +180,8 @@ def update_daum():
 
             try:
                 this_cartoon = Webtoon.objects.get(name=cartoon_name, content_provider=provider_obj)
-            except:
                 print("new cartoon", cartoon_name)
+            except:
                 this_cartoon = Webtoon()
                 this_cartoon.name = cartoon_name
                 this_cartoon.content_provider = provider_obj
@@ -250,7 +233,6 @@ def update_daum():
             # print(image)
 
             # print()
-            print('.', end='')
 
 
 
@@ -351,114 +333,8 @@ def update_lezhin():
             # print(image)
 
             # print()
-            print('.', end='')
 
 
-def update_episode_naver(webtoon):
-    res = requests.get(webtoon.url)
-    soup = BeautifulSoup(res.content, 'html.parser')
-    title = soup.select('tr > td.title > a')
-    created = soup.select('tr > td.num')
-    image = soup.select('tr > td:nth-child(1) > a > img')
-
-    try:
-        num = len(Episode.objects.get(webtoon=webtoon))
-    except:
-        num = 0
-
-    for i in range(len(title)-1, -1, -1):
-        url = 'https://comic.naver.com' + title[i].get('href').split('&weekday=')[0]
-        try:
-            Episode.objects.get(url=url)
-        except:
-            this_episode = Episode()
-            this_episode.webtoon = webtoon
-            this_episode.image = image[i].get('src')
-            this_episode.number = num
-            this_episode.title = title[i].get_text()
-            date_time_obj = datetime.datetime.strptime(created[i].get_text(), '%Y.%m.%d')
-            this_episode.created = date_time_obj.date()
-            this_episode.isFree = True
-            this_episode.url = url
-            this_episode.save()
-            print("new episode: ", this_episode)
-            num += 1
-
-def first_init_episode_naver(webtoon):
-    try:
-        num = len(Episode.objects.filter(webtoon=webtoon)) + 1
-    except:
-        num = 1
-
-    next = webtoon.url + '&page=500'
-    while True:
-        res = requests.get(next)
-        soup = BeautifulSoup(res.content, 'html.parser')
-        title = soup.select('tr > td.title > a')
-        created = soup.select('tr > td.num')
-        image = soup.select('tr > td:nth-child(1) > a > img')
-
-        for i in range(len(title)-1, -1, -1):
-            url = 'https://comic.naver.com' + title[i].get('href').split('&weekday=')[0]
-            try:
-                Episode.objects.get(url=url)
-                print('.', end='')
-            except:
-                this_episode = Episode()
-                this_episode.webtoon = webtoon
-                this_episode.image = image[i].get('src')
-                this_episode.number = num
-                this_episode.title = title[i].get_text()
-                date_time_obj = datetime.datetime.strptime(created[i].get_text(), '%Y.%m.%d')
-                this_episode.created = date_time_obj.date()
-                this_episode.isFree = True
-                this_episode.url = url
-                this_episode.save()
-                print("new episode: ", this_episode)
-                num += 1
-        try:
-            next = 'https://comic.naver.com/' + soup.select_one('#content > div.paginate > div > a.pre').get('href')
-        except:
-            break
-
-
-def update_episode_daum(webtoon):
-    code = webtoon.url.split('/')[-1]
-    data = requests.get('http://webtoon.daum.net/data/pc/webtoon/view/' + code).json()['data']
-
-    description = data["webtoon"]["introduction"]
-    
-    image = data["webtoon"]["thumbnailImage2"]["url"]
-    webtoon.image = image
-    webtoon.description = description
-    webtoon.save()
-
-    print(description)
-    print(image)
-    print(data["webtoon"]["webtoonEpisodes"])
-    print()
-    print(type(data["webtoon"]["webtoonEpisodes"]))
-    
-
-    episode = data["webtoon"]["webtoonEpisodes"].reverse()
-
-    for i in episode:
-        url = 'http://webtoon.daum.net/webtoon/viewer/' + i["id"]
-        try:
-            Episode.objects.get(url=url)
-            print('.', end='')
-        except:
-            this_episode = Episode()
-            this_episode.webtoon = webtoon
-            this_episode.image = i["thumbnailImage"]["url"]
-            this_episode.number = i["episode"]
-            this_episode.title = i["title"]
-            date_time_obj = datetime.datetime.strptime(i["dateCreated"][:8], '%Y%m%d')
-            this_episode.created = date_time_obj.date()
-            this_episode.isFree = True if i["price"] == 0 else False
-            this_episode.url = url
-            this_episode.save()
-            print("new episode: ", this_episode)
 
 @transaction.atomic
 def test():
@@ -488,7 +364,11 @@ def test():
 
 
 if __name__ == "__main__":
-    # set_content_providers()
-    # set_rating_systems()
-    # update_new_cartoon()
-    update_new_episode()
+    set_content_providers()
+    set_rating_systems()
+    update_new_cartoon()
+    # update_naver()
+    # update_daum()
+    # update_lezhin()
+    # update_my_model_data()
+    # test()

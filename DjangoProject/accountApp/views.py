@@ -4,6 +4,7 @@ from .forms import SingupForm, LoginForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 
 
 User = get_user_model()

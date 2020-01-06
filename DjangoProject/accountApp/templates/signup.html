@@ -6,7 +6,7 @@
 
 {% block contents %}
 <h1>signup</h1>
-<form method="post" actions="{% url 'accounts:signup' %}">
+<form method="GET" actions="{% url 'accounts:signup' %}">
     {% csrf_token %}
     {{form.as_p}}
     <input type="submit" value="회원가입">
