@@ -1,6 +1,6 @@
 {# 유저 정보 하나를 담는 카드 템플릿 #}
 {#number|default:"1"#}
-<div id="user-{{ person.id }}{{ template_id }}" name="{{ person.id }}" class="column is-one-third">
+<div id="user-{{ person.id }}" name="{{ person.id }}" class="column is-one-third">
     {% with person.profile as profile %}
         <div class="card">
             <div class="card-content">
@@ -32,7 +32,7 @@
 
                 <div class="content">
                     {% if person.id != request.user.id %}
-                    <button id="btn-{{ person.id }}{{ template_id }}" name="{{ person.id }}" class="button is-primary">
+                    <button id="btn-{{ person.id }}" name="{{ person.id }}" class="button is-primary">
                         {% if person.id in checkList or isFollowing %}
                             following
                         {% else %}

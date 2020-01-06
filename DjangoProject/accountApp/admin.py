@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import CustomUser as User, Profile
+from .models import CustomUser as User, Profile, Relation
 
 
 class ProfileInline(admin.StackedInline):
@@ -14,14 +14,25 @@ class ProfileInline(admin.StackedInline):
     fk_name = 'user'
 
 
+class RelationInline1(admin.TabularInline):
+    model = Relation
+    fk_name = "to_user"
+
+
+class RelationInline2(admin.TabularInline):
+    model = Relation
+    fk_name = "from_user"
+
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+
     class Meta:
         model = User
-        fields = ('email', )
+        fields = ('email',)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -59,7 +70,7 @@ class UserChangeForm(forms.ModelForm):
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline, RelationInline1, RelationInline2,)
 
     form = UserChangeForm
     add_form = UserCreationForm
@@ -70,7 +81,6 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Permissions', {'fields': ('is_admin',)}),
-        ('Friends', {'fields':('following', 'followers',)})
     )
 
     add_fieldsets = (

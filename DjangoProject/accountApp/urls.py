@@ -12,5 +12,8 @@ urlpatterns = [
     path('logout/', views.logoutView, name='logout'),
     path('reset/', views.deleteUsers, name="reset"),
     path('follow/', views.follow, name="follow"),
-    path('profile/', views.profile, name="profile")
+
+    # profile에서 follower, following 목록으로
+    path('profile/', views.profile, name="profile"),
+    path('follow-list/', views.followListView, name="follow_list")
 ]

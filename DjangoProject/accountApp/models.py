@@ -1,3 +1,4 @@
+import django
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -57,8 +58,9 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
-    followers = models.ManyToManyField("self", related_name="followers")
-    following = models.ManyToManyField("self", related_name="following")
+    # 순서대로 역참조 방지, 비대칭 관계, 중계모델 설정
+    relations = models.ManyToManyField("self", related_name="+",
+                                       symmetrical=False, through="Relation")
 
     objects = CustomUserManager()
 
@@ -78,6 +80,29 @@ class CustomUser(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+    @property
+    def following(self):
+        # 내가 팔로우 하고 있는 유저들의 목록을 가져온다.
+        following_relations = self.relations_by_from_user.all()
+        following_pk_list = following_relations.values_list('to_user', flat=True)
+        following_users = CustomUser.objects.filter(pk__in=following_pk_list)
+        return following_users
+
+    @property
+    def followers(self):
+        # 나를 팔로우하고 있는 유저들의 목록을 가져온다.
+        follower_pk_list = self.relations_by_to_user.values_list('from_user', flat=True)
+        follower_users = CustomUser.objects.filter(pk__in=follower_pk_list)
+        return follower_users
+
+    def follow(self, to_user):
+        if self.id != to_user.id:
+            try:
+                self.relations_by_from_user.create(to_user=to_user)
+                return True
+            except django.db.utils.IntegrityError:
+                self.relations_by_from_user.filter(to_user=to_user).delete()
+                return False
 
 class Profile(models.Model):
     GENDER_CHOICES = (
@@ -121,9 +146,16 @@ class Profile(models.Model):
         return items
 
 
-# allauth adapter로 처리
-# @receiver(post_save, sender=CustomUser)
-# def create_or_update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#     instance.profile.save()
+class Relation(models.Model):
+    from_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                                  # 내가 from_user인 경우 즉 내가 follower인 following한 사람들의 목록을 가져올 때
+                                  related_name="relations_by_from_user")
+    to_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                                # 자신이 to_user인 경우 즉 나의 followee 들의 목록을 가져올 때
+                                related_name="relations_by_to_user")
+
+    class Meta:
+        unique_together = ("from_user", "to_user",)
+
+    def __str__(self):
+        return f'({self.from_user.email} -> {self.to_user.email})'

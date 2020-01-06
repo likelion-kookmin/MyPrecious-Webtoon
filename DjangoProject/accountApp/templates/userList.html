@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    유저 목록
+    {{title}}
 {% endblock %}
 {% block extra_head %}
 
@@ -16,8 +16,6 @@
 
 {% block extra_body %}
     <script>
-        var template_id = '{{ template_id|default:'' }}';
-
         window.onload = function () {
             follow_buttons = document.querySelectorAll(".content button");
             follow_buttons.forEach(button => {
@@ -45,16 +43,16 @@
                 res.json()
                     .then((json) => {
                             console.log(json);
-                            render(json["target"], json["data"], json["msg"], template_id);
+                            render(json["target"], json["data"], json["msg"]);
                         }
                     )
             }).catch(err => console.error(err));
         }
 
-        function render(target, data, messages, template_id = 1) {
-            target_dom = document.querySelector(`#user-${target}${template_id}`);
+        function render(target, data, messages) {
+            target_dom = document.querySelector(`#user-${target}`);
             target_dom.outerHTML = data;
-            target_button = document.querySelector(`#btn-${target}${template_id}`);
+            target_button = document.querySelector(`#btn-${target}`);
             target_button.addEventListener('click', follow);
 
             message_dom = document.querySelector(`#messages`);

@@ -1,3 +1,4 @@
+import django
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
@@ -11,55 +12,36 @@ User = get_user_model()
 # Create your views here.
 def follow(request):
     message = ("unfollow", "follow",)
-    isFollowing = False
 
     ctx = dict()
     if request.method == "POST":
         user = request.user
 
         following_id = request.POST.get("id")
-        if user.id is not following_id:
-            following = get_object_or_404(User, pk=following_id)
-            print(following.followers.all())
-            if user.following.filter(pk=following_id).exists():
-                isFollowing = False
-                following.followers.remove(user)
-                user.following.remove(following)
-            else:
-                isFollowing = True
-                following.followers.add(user)
-                user.following.add(following)
-            print(user.following.all())
-            print(user.followers.all())
-            # following_list = user.following.values_list('id', flat=True)
-            messages.info(request, message[isFollowing])
-            ctx.update({"person": following, "isFollowing": isFollowing})
+        target = get_object_or_404(User, pk=following_id)
 
-    # partial을 rendering 한 결과를 전송.
-    html = render_to_string("partial/_user.html", ctx)
-    msg = render_to_string("messages.html", {"messages":messages.get_messages(request)})
-    ctx = {
-        "target": f"{following.id}",
-        "data": html,
-        "msg": msg
-    }
+        isFollowing = user.follow(target)
+        messages.info(request, message[isFollowing])
+        ctx.update({"person": target, "isFollowing": isFollowing})
+
+        # partial을 rendering 한 결과를 전송.
+        html = render_to_string("partial/_user.html", ctx)
+        msg = render_to_string("messages.html", {"messages": messages.get_messages(request)})
+        ctx = {
+            "target": f"{ctx['person'].id}",
+            "data": html,
+            "msg": msg
+        }
     return JsonResponse(ctx)
 
 
 def profile(request):
     user = request.user
-    following_list = user.following.all()
-    follower_list = user.followers.all()
-
-    print(following_list)
-    print(follower_list)
-
+    follower_list = user.followers
     ctx = {
         'user': request.user,
-        'following': following_list,
-        'following_ids': following_list.values_list('id', flat=True),
-        'followers': follower_list,
-        'follower_ids': follower_list.values_list('id', flat=True),
+        'people': follower_list,
+        'checkList': user.following.values_list('id', flat=True),
     }
     return render(request, "profile.html", ctx)
 
@@ -67,8 +49,34 @@ def profile(request):
 def userListView(request):
     following_list = request.user.following.values_list('id', flat=True)
     ctx = {"users": User.objects.select_related("profile").all().exclude(id=request.user.id)}
-    ctx.update({"following": list(following_list)})
+    ctx.update({"following": list(following_list),
+                "title": "추천 유저 목록"})
     return render(request, "userList.html", ctx)
+
+
+def followListView(request):
+    ctx = dict()
+    type = request.GET.get("type").lower()
+    following = request.user.following
+    if type != "following":
+        followers = request.user.followers
+        ctx.update({"title": "follower 유저 목록",
+                    "people": followers,
+                    "checkList": following.values_list("id", flat=True)})
+    else:
+        ctx.update({"title": "following 유저 목록",
+                    "people": following,
+                    "checkList": following.values_list("id", flat=True)})
+
+    html = render_to_string("partial/_userList.html", ctx)
+    # msg = render_to_string("messages.html", {"messages": messages.get_messages(request)})
+    print(ctx)
+    ctx = {
+        "target": "userList",
+        "data": html
+    }
+
+    return JsonResponse(ctx)
 
 
 def logoutView(request):
