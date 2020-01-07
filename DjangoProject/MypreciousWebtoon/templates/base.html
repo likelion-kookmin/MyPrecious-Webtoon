@@ -34,8 +34,8 @@
                 {#<li><a href="{% url 'accounts:reset' %}">Reset</a></li>#}
                 <li><a href="{% url 'webtoonList:random' %}">무작위 웹툰 평가하러 가기</a></li>
                 <li>검색하기
-                    <form method="POST" action="{% url 'webtoonList:search' %}">
-                        <input type="text" name="Search">
+                    <form method="GET" action="{% url 'webtoonList:search' %}">
+                        <input type="text" name="keyword">
                         <input type="submit" value="search">
                     </form>
                 </li>

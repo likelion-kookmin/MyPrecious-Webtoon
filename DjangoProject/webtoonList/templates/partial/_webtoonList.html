@@ -14,6 +14,8 @@
 <span>{{ webtoon_list.paginator.num_pages }}</span>
 
 {% if webtoon_list.has_next %}
-    <a href="?page={{ webtoon_list.next_page_number }}">다음으로</a>
-    <a href="?page={{ webtoon_list.paginator.num_pages }}">맨 뒤로</a>
+    <a href="?page={{ webtoon_list.next_page_number }}&keyword={{ keyword }}">다음으로</a>
+{% endif %}
+{% if webtoon_list.has_previous %}
+    <a href="?page={{ webtoon_list.paginator.num_pages }}&keyword={{ keyword }}">맨 뒤로</a>
 {% endif %}
