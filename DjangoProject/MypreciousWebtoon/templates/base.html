@@ -2,53 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
 </head>
 <body>
+<div class="container">
     {% block body %}
-    {% if messages %}
-    <div>
-      <strong>Messages:</strong>
-      <ul>
-        {% for message in messages %}
-        <li>{{message}}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    <div>
-      <strong>Menu:</strong>
-      <ul>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
-        <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
-        {% else %}
-        <li><a href="{% url 'account_login' %}">Sign In</a></li>
-        <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-        {% endif %}
-        <li><a href="{% url 'accounts:reset' %}">Reset</a></li>
-      </ul>
-    </div>
-    <div>
-      <a href="{% url 'webtoonList:Random' %}">무작위 웹툰 평가하러 가기</a>
-    </div>
-    <br>
-    검색하기
-    <form method="POST" action="{%url 'webtoonList:Search'%}">
-      <input type="text" name="Search">
-      <input type="submit" value="search">
-    </form>
-
-
-    {% block content %}
-    {% endblock %}
+        {% include "messages.html" %}
+  
+        <div class="content">
+            <strong>Menu:</strong>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+                    <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+                    <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">Sign In</a></li>
+                    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+                {% endif %}
+                <li><a href="{% url 'accounts:user_list' %}">User List</a></li>
+                <li><a href="{% url 'accounts:reset' %}">Reset</a></li>
+            </ul>
+            <br>
+        </div>
+        <div>
+            <a href="{% url 'webtoonList:Random' %}">무작위 웹툰 평가하러 가기</a>
+        </div>
+        <br>
+        검색하기
+        <form method="POST" action="{% url 'webtoonList:Search' %}">
+            <input type="text" name="Search">
+            <input type="submit" value="search">
+        </form>
+        {% block content %}
+        {% endblock %}
     {% endblock %}
     {% block extra_body %}
     {% endblock %}
+</div>
 </body>
 </html>
