@@ -22,6 +22,11 @@
 
 {% block extra_body %}
     <script type="text/javascript">
+        // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
+        var follow_list_url = new URL("http://{{ request.get_host }}{% url 'accounts:follow_list'%}");
+    </script>
+
+    <script type="text/javascript">
         window.onload = function () {
             tabs = document.querySelectorAll("div.tabs > ul > li");
             tabs.forEach((tab) => {
@@ -36,6 +41,8 @@
         function changeTab(event) {
             // href 링크로 들어가는것을 방지
             event.preventDefault();
+
+            // 탭을 선택할 때마다 활성화되는 탭을 바꿔준다.
             tabs.forEach((tab) => {
                 if (tab.innerText == event.target.innerText) {
                     tab.className = "is-active"
@@ -44,7 +51,8 @@
                 }
             });
 
-            let url = new URL("http://{{ request.get_host }}{% url 'accounts:follow_list'%}");
+            // 데이터 요청
+            let url = follow_list_url;
             let query = new URLSearchParams();
             query.set("type", event.target.innerText);
             url.search = query.toString();
@@ -61,6 +69,7 @@
             }).catch(err => console.error(err));
         }
 
+        // 데이터를 가져와서 target을 렌더링한 HTML 데이터로 치환
         function render(target, data, messages = "", renderType = "list") {
             if (renderType == "list") {
                 target_dom = document.querySelector(`#${target}`);
@@ -93,7 +102,6 @@
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
-                    {#'Content-Type': 'application/json',#}
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': getCookie("csrftoken"),
                     "X-Requested-With": "XMLHttpRequest"
@@ -109,6 +117,7 @@
             }).catch(err => console.error(err));
         }
 
+        // Cookie를 가져와 POST요청에 필요한 csrf token을 가져올 때 사용한다.
         function getCookie(cname) {
             var name = cname + "=";
             var decodedCookie = decodeURIComponent(document.cookie);

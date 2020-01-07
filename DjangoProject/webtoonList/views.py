@@ -9,8 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 def Rated(request):
     return render(request, "random_list.html")
 
+
 def Rating(request):
     return render(request, "random_list.html")
+
 
 @csrf_exempt
 def Search(request):
@@ -26,10 +28,13 @@ def Search(request):
         wts_search_by_name = paginator.get_page(1)
     except EmptyPage:
         wts_search_by_name = Paginator.get_page(paginator.num_pages)
-    return render(request, "search_list.html", {"search_word":search_word, "wts_search_by_name":wts_search_by_name, "wts_search_by_cartoonists":wts_search_by_cartoonists})
+    return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
+                                                "wts_search_by_cartoonists": wts_search_by_cartoonists})
+
 
 def Subscribe(request):
     return render(request, "random_list.html")
+
 
 def Random(request):
     webtoons = Webtoon.objects.all()
@@ -41,4 +46,4 @@ def Random(request):
         wts = paginator.get_page(1)
     except EmptyPage:
         wts = Paginator.get_page(paginator.num_pages)
-    return render(request, "random_list.html", {"wts":wts})
+    return render(request, "random_list.html", {"wts": wts})

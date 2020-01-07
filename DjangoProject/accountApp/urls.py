@@ -15,6 +15,5 @@ urlpatterns = [
 
     # profile에서 follower, following 목록으로
     path('profile/', views.profile, name="profile"),
-    path('follow-list/', views.followListView, name="follow_list")
-    path('', include('webtoonList.urls')),
+    path('follow-list/', views.followListView, name="follow_list"),
 ]
