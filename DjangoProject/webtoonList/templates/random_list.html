@@ -1,44 +1,92 @@
-<html>
-<head>
-    <title>무작위 웹툰 평가하기</title>
-    <style>
-        div {
-            width: 550px;
-            height: 300px;
-            padding: 50px;
-            border: 1px solid gray;
-            margin: 100px;
-        }
-    </style>
-</head>
-<h1>무작위 웹툰 평가하기</h1>
-<a href="/">홈으로 가기</a>
-{% for wt in wts %}
-    <div>
-        이미지 : {{ wt.image }} <br>
-        이름 : {{ wt.name }} <br>
-        설명충 : <a>{{ wt.description }}</a> <br>
-        작가 : {% for ct in wt.cartoonists.all %}{{ ct }} {% endfor %}<br>
-        플랫폼 : {{ wt.content_provider }} <br>
-        장르 : {% for tag in wt.tags.all %}{{ tag }} {% endfor %}<br>
-        연령 : {{ wt.age_rating }} <br>
-        이동하기 : <a href="{{ wt.url }}">만화 보러가기</a><br>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    무작위 웹툰 평가하기
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">무작위 웹툰 평가하기</h1>
+
+    <div class="columns is-multiline">
+        {% for wt in wts %}
+            <div class="column is-half">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-64x64">
+                                    <img src="{% if wt.image %}
+                                                     {{ wt.image }}
+                                                 {% else %}
+                                                     {% static "image/No-Image.png" %}
+                                                 {% endif %}"
+                                         alt="Webtoon image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p class="title is-4">{{ wt.name }}</p>
+                                <p class="subtitle is-6">{% for ct in wt.cartoonists.all %}@{{ ct }} {% endfor %}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <table class="table is-fullwidth">
+                                <tbody>
+                                <tr>
+                                    <th>플랫폼</th>
+                                    <td>{{ wt.content_provider }} </td>
+                                </tr>
+                                <tr>
+                                    <th>장르</th>
+                                    <td>{% for tag in wt.tags.all %}{{ tag }} {% endfor %}</td>
+                                </tr>
+                                <tr>
+                                    <th>연령</th>
+                                    <td>{{ wt.age_rating }} </td>
+                                </tr>
+                                <tr>
+                                    <th>설명충</th>
+                                    <td>{{ wt.description|safe }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <div class="field has-addon"></div>
+                        <p class="card-footer-item has-background-danger">
+                          <span class="is-danger">
+                              구독하기
+                          </span>
+                        </p>
+                        <p class="card-footer-item has-background-primary">
+                          <span>
+                            <a href="{{ wt.url }}">만화 보러가기</a>
+                          </span>
+                        </p>
+                    </footer>
+                </div>
+            </div>
+
+
+        {% endfor %}
     </div>
-{% endfor %}
 
-{% if wts.has_previous %}
-    <a href="?page=1">맨 앞으로</a>
-    <a href="?page={{ wts.previous_page_number }}">이전으로</a>
-{% endif %}
+    {% if wts.has_previous %}
+        <a href="?page=1">맨 앞으로</a>
+        <a href="?page={{ wts.previous_page_number }}">이전으로</a>
+    {% endif %}
 
-<span>{{ wts.number }}</span>
-<span>/</span>
-<span>{{ wts.paginator.num_pages }}</span>
+    <span>{{ wts.number }}</span>
+    <span>/</span>
+    <span>{{ wts.paginator.num_pages }}</span>
 
-{% if wts.has_next %}
-    <a href="?page={{ wts.next_page_number }}">다음으로</a>
-    <a href="?page={{ wts.paginator.num_pages }}">맨 뒤로</a>
-{% endif %}
-
-
-</html>
+    {% if wts.has_next %}
+        <a href="?page={{ wts.next_page_number }}">다음으로</a>
+        <a href="?page={{ wts.paginator.num_pages }}">맨 뒤로</a>
+    {% endif %}
+{% endblock %}

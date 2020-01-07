@@ -1,15 +1,16 @@
 from django.db import models
 
+
 # Create your models here.
 class Webtoon(models.Model):
-    image = models.TextField(null=True)
+    image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     cartoonists = models.ManyToManyField('Cartoonist')
     content_provider = models.ForeignKey('ContentProvider', on_delete=models.PROTECT)
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField('Tag', null=True, blank=True)
     age_rating = models.ForeignKey('AgeRatingSystem', on_delete=models.PROTECT, default=1)
-    url = models.CharField(max_length=200)
+    url = models.URLField(max_length=200)
 
     def __str__(self):
         s = [str(i) for i in self.cartoonists.all()]
@@ -17,28 +18,31 @@ class Webtoon(models.Model):
 
     def is_all_episode_free(self):
         is_free = True
-        
+
         for i in Episode.objects.get(webtoon=self):
             if not i.isFree:
                 is_free = False
                 break
         return is_free
 
+
 class Cartoonist(models.Model):
-    image = models.TextField(null=True)
+    image = models.URLField(null=True, max_length=200)
     name = models.CharField(max_length=100)
-    text = models.TextField(null=True) # 작가의말
+    text = models.TextField(null=True)  # 작가의말
 
     def __str__(self):
         return self.name
+
 
 class ContentProvider(models.Model):
-    image = models.ImageField(null=True, default = '')
+    image = models.ImageField(null=True, default='')
     name = models.CharField(max_length=100)
-    url = models.CharField(max_length=100, default='')
+    url = models.URLField(default='')
 
     def __str__(self):
         return self.name
+
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=100)
@@ -46,24 +50,25 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag_name
 
+
 class AgeRatingSystem(models.Model):
     rating = models.CharField(max_length=10)
 
     def __str__(self):
         return self.rating
 
+
 class Episode(models.Model):
     webtoon = models.ForeignKey('Webtoon', on_delete=models.PROTECT)
-    image = models.TextField(default = '')
+    image = models.URLField(default='')
     number = models.IntegerField()
     title = models.TextField()
     created = models.DateField()
     isFree = models.BooleanField()
-    url = models.CharField(max_length=100)
+    url = models.URLField()
 
     def __str__(self):
         return f"{self.webtoon.name} {[self.number]} \"{self.title}\" ({self.created})"
-
 
 # class Rating(models.Model):
 #     user = models.ForeignKey('', on_delete=models.CASCADE)
