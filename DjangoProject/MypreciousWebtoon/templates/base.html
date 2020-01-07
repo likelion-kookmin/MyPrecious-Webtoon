@@ -15,7 +15,7 @@
 <div class="container">
     {% block body %}
         {% include "messages.html" %}
-
+  
         <div class="content">
             <strong>Menu:</strong>
             <ul>
@@ -23,7 +23,6 @@
                     <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
                     <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
                     <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
-{#                    <li><a href="{% url 'contents:subscribe' %}">Subscribe</a></li>#}
                 {% else %}
                     <li><a href="{% url 'account_login' %}">Sign In</a></li>
                     <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
@@ -31,8 +30,17 @@
                 <li><a href="{% url 'accounts:user_list' %}">User List</a></li>
                 <li><a href="{% url 'accounts:reset' %}">Reset</a></li>
             </ul>
-        <br>
+            <br>
         </div>
+        <div>
+            <a href="{% url 'webtoonList:Random' %}">무작위 웹툰 평가하러 가기</a>
+        </div>
+        <br>
+        검색하기
+        <form method="POST" action="{% url 'webtoonList:Search' %}">
+            <input type="text" name="Search">
+            <input type="submit" value="search">
+        </form>
         {% block content %}
         {% endblock %}
     {% endblock %}

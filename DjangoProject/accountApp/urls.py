@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = "accounts"
@@ -16,4 +16,5 @@ urlpatterns = [
     # profile에서 follower, following 목록으로
     path('profile/', views.profile, name="profile"),
     path('follow-list/', views.followListView, name="follow_list")
+    path('', include('webtoonList.urls')),
 ]
