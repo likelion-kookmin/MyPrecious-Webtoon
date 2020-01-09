@@ -1,6 +1,7 @@
 import django
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from contentsApp.models import Webtoon
 
 
 # Create your models here.
@@ -104,6 +105,7 @@ class CustomUser(AbstractBaseUser):
                 self.relations_by_from_user.filter(to_user=to_user).delete()
                 return False
 
+
 class Profile(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -125,6 +127,7 @@ class Profile(models.Model):
     image = models.ImageField(blank=True, null=True)
     age_range = models.PositiveSmallIntegerField(blank=True, null=True, choices=AGE_RANGE)
     date_of_birth = models.DateField(blank=True, null=True)
+    subscribes = models.ManyToManyField(Webtoon, blank=True)
 
     def __str__(self):
         return f'{self.nickname} ({self.user.email})'
