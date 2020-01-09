@@ -13,5 +13,5 @@
     {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_name keyword=search_word only %}
 
     <h1 class="title">"{{ search_word }}"으로 검색된 작가들</h1>
-    {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_cartoonists keyword=search_word only %}
+    {% include "partial/_webtoonList.html" with webtoon_list_c=wts_search_by_cartoonists keyword=search_word only %}
 {% endblock %}
