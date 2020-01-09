@@ -8,17 +8,10 @@
 
 {% endblock %}
 
-<<<<<<< HEAD
-{% if wts_search_by_name.has_next %}
-    <a href="?page={{ wts_search_by_name.next_page_number }}&search_word={{Search}}">다음으로</a>
-    <a href="?page={{ wts_search_by_name.paginator.num_pages }}">맨 뒤로</a>
-{% endif %}
-=======
 {% block content %}
     <h1 class="title">"{{ search_word }}"으로 검색된 웹툰들</h1>
     {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_name keyword=search_word only %}
->>>>>>> 3bc9433ca8cc44b866d5061127d546cfe994da19
 
     <h1 class="title">"{{ search_word }}"으로 검색된 작가들</h1>
-    {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_cartoonists keyword=search_word only %}
+    {% include "partial/_webtoonList.html" with webtoon_list_c=wts_search_by_cartoonists keyword=search_word only %}
 {% endblock %}

@@ -5,8 +5,8 @@
 </div>
 
 {% if webtoon_list.has_previous %}
-    <a href="?page=1">맨 앞으로</a>
-    <a href="?page={{ webtoon_list.previous_page_number }}">이전으로</a>
+    <a href="?page=1&keyword={{ keyword }}">맨 앞으로</a>
+    <a href="?page={{ webtoon_list.previous_page_number }}&keyword={{ keyword }}">이전으로</a>
 {% endif %}
 
 <span>{{ webtoon_list.number }}</span>
@@ -18,4 +18,27 @@
 {% endif %}
 {% if webtoon_list.has_previous %}
     <a href="?page={{ webtoon_list.paginator.num_pages }}&keyword={{ keyword }}">맨 뒤로</a>
+{% endif %}
+
+<div class="columns is-multiline">
+
+{% for webtoon in webtoon_list_c %}
+        {% include "partial/_webtoon.html" %}
+    {% endfor %}
+</div>
+
+{% if webtoon_list_c.has_previous %}
+    <a href="?page=1&keyword={{ keyword }}">맨 앞으로</a>
+    <a href="?page={{ webtoon_list_c.previous_page_number }}&keyword={{ keyword }}">이전으로</a>
+{% endif %}
+
+<span>{{ webtoon_list_c.number }}</span>
+<span>/</span>
+<span>{{ webtoon_list_c.paginator.num_pages }}</span>
+
+{% if webtoon_list_c.has_next %}
+    <a href="?page={{ webtoon_list_c.next_page_number }}&keyword={{ keyword }}">다음으로</a>
+{% endif %}
+{% if webtoon_list_c.has_previous %}
+    <a href="?page={{ webtoon_list_c.paginator.num_pages }}&keyword={{ keyword }}">맨 뒤로</a>
 {% endif %}

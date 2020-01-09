@@ -21,15 +21,11 @@ def Rating(request):
 
 @csrf_exempt
 def Search(request):
-<<<<<<< HEAD
-    search_word = request.GET.get('Search', '').strip()
-=======
     search_word = request.GET.get("keyword")
->>>>>>> 3bc9433ca8cc44b866d5061127d546cfe994da19
     wts_search = Webtoon.objects.all()
 
     by_name = wts_search.filter(name__icontains=search_word)
-    wts_search_by_cartoonists = wts_search.filter(cartoonists__name=search_word)
+    by_cartoonists = wts_search.filter(cartoonists__name=search_word)
 
     paginator = Paginator(by_name, 5)
     page = request.GET.get('page')
@@ -39,6 +35,15 @@ def Search(request):
         wts_search_by_name = paginator.get_page(1)
     except EmptyPage:
         wts_search_by_name = Paginator.get_page(paginator.num_pages)
+
+    paginator1 = Paginator(by_cartoonists, 5)
+    page = request.GET.get('page')
+    try:
+        wts_search_by_cartoonists = paginator1.get_page(page)
+    except PageNotAnInteger:
+        wts_search_by_cartoonists = paginator1.get_page(1)
+    except EmptyPage:
+        wts_search_by_cartoonists = Paginator1.get_page(paginator1.num_pages)
     return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
                                                 "wts_search_by_cartoonists": wts_search_by_cartoonists})
 
