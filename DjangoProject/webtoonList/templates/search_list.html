@@ -38,7 +38,7 @@
 <span>{{ wts_search_by_name.paginator.num_pages }}</span>
 
 {% if wts_search_by_name.has_next %}
-    <a href="?page={{ wts_search_by_name.next_page_number }}">다음으로</a>
+    <a href="?page={{ wts_search_by_name.next_page_number }}&search_word={{Search}}">다음으로</a>
     <a href="?page={{ wts_search_by_name.paginator.num_pages }}">맨 뒤로</a>
 {% endif %}
 

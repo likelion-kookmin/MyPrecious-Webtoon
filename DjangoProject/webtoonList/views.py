@@ -16,12 +16,12 @@ def Rating(request):
 
 @csrf_exempt
 def Search(request):
-    search_word = request.POST.get('Search', '').strip()
+    search_word = request.GET.get('Search', '').strip()
     wts_search = Webtoon.objects.all()
     by_name = wts_search.filter(name__icontains=search_word)
     wts_search_by_cartoonists = wts_search.filter(cartoonists__name=search_word)
     paginator = Paginator(by_name, 5)
-    page = request.POST.get('page')
+    page = request.GET.get('page')
     try:
         wts_search_by_name = paginator.get_page(page)
     except PageNotAnInteger:
