@@ -9,5 +9,6 @@ urlpatterns = [
     path('rating_list/', views.Rating, name='rating'),
     path('search_list/', views.Search, name='search'),
     path('random_list/', views.Random, name='random'),
-    path('subscribe_list/', views.Subscribe, name='subscribe_list'),
+    path('subscribe/', views.subscribe, name='subscribe'),
+    path('subscribe_list/', views.subscribe_list, name='subscribe_list'),
 ]

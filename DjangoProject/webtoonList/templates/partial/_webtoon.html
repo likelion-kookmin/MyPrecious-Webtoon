@@ -1,5 +1,5 @@
 {% load static %}
-<div class="column is-half">
+<div id="webtoon-{{ webtoon.id }}" name="{{ webtoon.id }}" class="column is-half">
     <div class="card">
         <div class="card-content">
             <div class="media">
@@ -41,18 +41,25 @@
                 </table>
             </div>
         </div>
-        <footer class="card-footer">
-            <div class="field has-addon"></div>
-            <p class="card-footer-item has-background-danger">
-              <span class="is-danger">
-                  구독하기
+            <div class="columns field has-addons has-addons-centered">
+                <div class="column is-two-fifths">
+            <span id="{{ webtoon.id }}"
+                  class="subscribe-button subscribe-button-{{ webtoon.id }}
+                    button is-danger is-medium is-fullwidth">
+                  {% if webtoon.id in checkList or isSubscribed %}
+                      구독취소하기
+                  {% else %}
+                      구독하기
+                  {% endif %}
               </span>
-            </p>
-            <p class="card-footer-item has-background-primary">
-              <span>
-                <a href="{{ webtoon.url }}">만화 보러가기</a>
+                </div>
+                <div class="column is-two-fifths">
+
+                <span class="button is-primary is-medium is-fullwidth">
+                <a style="all:unset" href="{{ webtoon.url }}">만화 보러가기</a>
               </span>
-            </p>
-        </footer>
+                </div>
+
+            </div>
     </div>
 </div>
