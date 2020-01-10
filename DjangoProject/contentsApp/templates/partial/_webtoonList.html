@@ -25,7 +25,7 @@
 {% block extra_body %}
     <script type="text/javascript">
         // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
-        var subscribe_url = new URL("http://{{ request.get_host }}{% url 'webtoonList:subscribe'%}");
+        var subscribe_url = new URL("http://{{ request.get_host }}{% url 'contentsApp:subscribe'%}");
     </script>
 
     <script>
