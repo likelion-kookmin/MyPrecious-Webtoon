@@ -25,11 +25,15 @@ def Rating(request):
 @csrf_exempt
 def Search(request):
     search_word = request.GET.get("keyword")
-    wts_search = Webtoon.objects.all()
+    wts_search = Webtoon.objects.all().order_by("id")
 
-    by_name = wts_search.filter(name__icontains=search_word)
-    by_cartoonists = wts_search.filter(cartoonists__name=search_word)
+    by_name = wts_search.filter(name__icontains=search_word).order_by("id")
+    by_cartoonists = wts_search.filter(cartoonists__name=search_word).order_by("id")
 
+    profile = Profile.objects.get(user__id=request.user.id)
+    subscribe_webtoons = profile.subscribes.all().order_by("id")
+    subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
+    
     paginator = Paginator(by_name, 5)
     page = request.GET.get('page')
     try:
@@ -48,7 +52,7 @@ def Search(request):
     except EmptyPage:
         wts_search_by_cartoonists = Paginator1.get_page(paginator1.num_pages)
     return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
-                                                "wts_search_by_cartoonists": wts_search_by_cartoonists})
+                                                "wts_search_by_cartoonists": wts_search_by_cartoonists, "checkList":subscribe_webtoon_ids})
 
 
 def subscribe_list(request):
@@ -108,7 +112,7 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "구독한 웹툰들", "webtoons": webtoons, "checkList":subscribes})
+    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList":subscribes})
 
 
 def get_random_webtoon(number_of_webtoons=1):
