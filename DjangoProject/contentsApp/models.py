@@ -2,6 +2,7 @@ from django.db import models
 
 
 
+
 # Create your models here.
 class Webtoon(models.Model):
     image = models.ImageField(null=True)
@@ -56,3 +57,20 @@ class Episode(models.Model):
     isFree = models.BooleanField()
 
     url = models.CharField(max_length=100)
+
+class Post(models.Model):
+    # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+class Comment(models.Model):
+    # author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', related_name='comments', on_delete = models.CASCADE)
+    text = models.TextField()
+    # created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
