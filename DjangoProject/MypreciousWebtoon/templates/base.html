@@ -72,12 +72,12 @@
     </div>
   </nav>
   <li><a href="{% url 'webtoonList:random' %}">무작위 웹툰 평가하러 가기</a></li>
-                <li>검색하기
+                <!-- <li>검색하기
                     <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
                         <input class="form-control mr-sm-2" type="text" name="keyword">
                         <input type="submit" value="search">
                     </form>
-                </li>
+                </li> -->
   
   {% block extra_body %}
   {% endblock %}
