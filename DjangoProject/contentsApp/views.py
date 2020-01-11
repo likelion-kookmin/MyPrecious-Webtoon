@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 from contentsApp.models import *
+from .forms import *
 
 # Create your views here.
 def webtoon_detail(request, id):
     webtoon = Webtoon.objects.get(pk=id)
+   
     return render(request, 'webtoon_detail.html', {'webtoon': webtoon})
 
 def list_test(request):
