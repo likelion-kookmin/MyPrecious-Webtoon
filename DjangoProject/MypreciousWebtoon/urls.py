@@ -19,6 +19,9 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 import contentsApp.views
+import webtoonList.views
+
+
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="home.html"), name="home"),
@@ -28,6 +31,7 @@ urlpatterns = [
     path('contents/', include('contentsApp.urls')),
     # path('detail/<int:id>', contentsApp.views.webtoon_detail, name='datail'),
     path('all', contentsApp.views.list_test),
+    path('', include('webtoonList.urls')),
 ]
 
 # media file serve

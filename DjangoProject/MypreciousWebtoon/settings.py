@@ -67,6 +67,8 @@ INSTALLED_APPS = [
 
     'contentsApp',
     'accountApp',
+    
+    'webtoonList',
 
     # allauth needs below apps.
     'django.contrib.sites',
