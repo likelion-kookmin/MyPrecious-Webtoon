@@ -35,11 +35,16 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <form class="form-inline my-2 my-lg-0">
+          <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
+              <input class="form-control mr-sm-2" type="text" name="keyword" style="width:1000px;">
+              <button class="btn btn-outline-primary my-6 my-sm-0" type="submit">Search</button>
+              
+          </form>
+        <!-- <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
             style="width:1000px;">
           <button class="btn btn-outline-primary my-6 my-sm-0" type="submit">Search</button>
-        </form>
+        </form> -->
         <li class="nav-item">
 
 
@@ -66,12 +71,19 @@
 
     </div>
   </nav>
-  
+  <li><a href="{% url 'webtoonList:random' %}">무작위 웹툰 평가하러 가기</a></li>
+                <li>검색하기
+                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
+                        <input class="form-control mr-sm-2" type="text" name="keyword">
+                        <input type="submit" value="search">
+                    </form>
+                </li>
   
   {% block extra_body %}
   {% endblock %}
   {% block contents %}
   {% endblock %}
+
 
 </body>
 
