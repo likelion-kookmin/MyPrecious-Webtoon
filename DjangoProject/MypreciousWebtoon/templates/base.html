@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    {% block body %}
+        {% include "messages.html" %}
+
+        <div class="content">
+            <strong>Menu:</strong>
+            <ul>
+                <li><a href="/">Home</a></li>
+
+                {% if user.is_authenticated %}
+                    {#<li><a href="{% url 'account_email' %}">Change E-mail</a></li>#}
+                    <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+                    <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+                    <li><a href="{% url 'contentsApp:subscribe_list' %}">Subscribes</a></li>
+                    <li><a href="{% url 'accounts:user_list' %}">User List</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">Sign In</a></li>
+                    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+                {% endif %}
+                {#<li><a href="{% url 'accounts:reset' %}">Reset</a></li>#}
+                <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li>
+                <li>검색하기
+                    <form method="GET" action="{% url 'contentsApp:search' %}">
+                        <input type="text" name="keyword">
+                        <input type="submit" value="search">
+                    </form>
+                </li>
+            </ul>
+            <br>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+        {% block content_c %}
+        {% endblock %}
+    {% endblock %}
+    {% block extra_body %}
+    {% endblock %}
+</div>
+</body>
+</html>

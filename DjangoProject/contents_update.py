@@ -364,11 +364,11 @@ def test():
 
 
 if __name__ == "__main__":
-    # set_content_providers()
-    # set_rating_systems()
-    # update_new_cartoon()
+    set_content_providers()
+    set_rating_systems()
+    update_new_cartoon()
     # update_naver()
     # update_daum()
-    update_lezhin()
+    # update_lezhin()
     # update_my_model_data()
     # test()

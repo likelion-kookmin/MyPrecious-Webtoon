@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">{{ title }}</h1>
+    {% include "partial/_webtoonList.html" with webtoon_list=webtoons %}
+{% endblock %}
