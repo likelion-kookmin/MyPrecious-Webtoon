@@ -26,7 +26,7 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-top:10px;">
-    <a class="navbar-brand" href="" style="margin-left:180px;margin-right:80px;">
+    <a class="navbar-brand" href="/" style="margin-left:180px;margin-right:80px;">
       <p1>MPW</p1>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -55,6 +55,9 @@
             {% if user.is_authenticated %}
             <a class="dropdown-item" href="{% url 'account_logout' %}">logout</a>
             <a class="dropdown-item" href="{% url 'account_email' %}">Change E-mail</a>
+            <a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a>
+            <a class="dropdown-item" href="{% url 'contentsApp:subscribe_list' %}">Subscribes</a>
+            <a class="dropdown-item" href="{% url 'accounts:user_list' %}">User List</a>
             {% else %} <div>
               <a class="dropdown-item" href="{% url 'account_login' %}">LogIn</a>
               <a class="dropdown-item" href="{% url 'account_signup' %}">Sign Up</a></div>
@@ -72,32 +75,9 @@
     {% block body %}
         {% include "messages.html" %}
 
-        <div class="content">
-            <strong>Menu:</strong>
-            <ul>
-                <li><a href="/">Home</a></li>
-
-                {% if user.is_authenticated %}
-                    {#<li><a href="{% url 'account_email' %}">Change E-mail</a></li>#}
-                    <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
-                    <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
-                    <li><a href="{% url 'contentsApp:subscribe_list' %}">Subscribes</a></li>
-                    <li><a href="{% url 'accounts:user_list' %}">User List</a></li>
-                {% else %}
-                    <li><a href="{% url 'account_login' %}">Sign In</a></li>
-                    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-                {% endif %}
-                {#<li><a href="{% url 'accounts:reset' %}">Reset</a></li>#}
+        
                 <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li>
-                <li>검색하기
-                    <form method="GET" action="{% url 'contentsApp:search' %}">
-                        <input type="text" name="keyword">
-                        <input type="submit" value="search">
-                    </form>
-                </li>
-            </ul>
-            <br>
-        </div>
+               
 
         {% block content %}
         {% endblock %}
