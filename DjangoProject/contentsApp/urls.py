@@ -14,3 +14,4 @@ urlpatterns = [
     path('subscribe_list/', views.subscribe_list, name='subscribe_list'),
     path('detail/<int:id>', views.webtoon_detail, name='detail'),
 
+]

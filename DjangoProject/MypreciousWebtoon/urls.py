@@ -20,7 +20,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 import contentsApp.views
-import webtoonList.views
 
 
 urlpatterns = [
@@ -31,6 +30,6 @@ urlpatterns = [
     path('contents/', include('contentsApp.urls')),
     path('', include('contentsApp.urls')),
 
-
+]
 # media file serve
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
