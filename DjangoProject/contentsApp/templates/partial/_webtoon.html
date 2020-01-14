@@ -14,7 +14,7 @@
                     </figure>
                 </div>
                 <div class="media-content">
-                    <p class="title is-4">{{ webtoon.name }}</p>
+                    <p class="title is-4"><a href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a></p>
                     <p class="subtitle is-6">{% for ct in webtoon.cartoonists.all %}@{{ ct }} {% endfor %}</p>
                 </div>
             </div>

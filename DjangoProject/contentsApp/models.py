@@ -1,6 +1,8 @@
 from django.db import models
 
 
+
+
 # Create your models here.
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)

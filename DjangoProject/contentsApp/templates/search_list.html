@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{{request.get_host}}
 
 {% block title %}
     {{ search_word }} 검색결과
@@ -10,8 +11,10 @@
 
 {% block content %}
     <h1 class="title">"{{ search_word }}"으로 검색된 웹툰들</h1>
-    {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_name keyword=search_word only %}
+    {% include "partial/_webtoonList.html" with webtoon_list=wts_search_by_name keyword=search_word %}
+{% endblock %}
 
+{% block content_c %}
     <h1 class="title">"{{ search_word }}"으로 검색된 작가들</h1>
-    {% include "partial/_webtoonList.html" with webtoon_list_c=wts_search_by_cartoonists keyword=search_word only %}
+    {% include "partial/_webtoonList_c.html" with webtoon_list=wts_search_by_cartoonists keyword=search_word %}
 {% endblock %}
