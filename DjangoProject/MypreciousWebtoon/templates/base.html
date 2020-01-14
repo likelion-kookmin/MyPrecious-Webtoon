@@ -36,16 +36,12 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-          <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
+          <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'contentsApp:search' %}">
               <input class="form-control mr-sm-2" type="text" name="keyword" style="width:1000px;">
               <button class="btn btn-outline-primary my-6 my-sm-0" type="submit">Search</button>
               
           </form>
-        <!-- <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'webtoonList:search' %}">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-            style="width:1000px;">
-          <button class="btn btn-outline-primary my-6 my-sm-0" type="submit">Search</button>
-        </form> -->
+        
         <li class="nav-item">
 
 
