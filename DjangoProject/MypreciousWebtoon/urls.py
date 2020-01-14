@@ -18,9 +18,9 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+
 import contentsApp.views
 import webtoonList.views
-
 
 
 urlpatterns = [
@@ -29,10 +29,8 @@ urlpatterns = [
     path('account/', include('accountApp.urls')),
     path('accounts/', include('allauth.urls')),
     path('contents/', include('contentsApp.urls')),
-    # path('detail/<int:id>', contentsApp.views.webtoon_detail, name='datail'),
-    path('all', contentsApp.views.list_test),
-    path('', include('webtoonList.urls')),
-]
+    path('', include('contentsApp.urls')),
+
 
 # media file serve
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
