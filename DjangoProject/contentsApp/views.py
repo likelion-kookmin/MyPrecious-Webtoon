@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Max
@@ -10,9 +11,14 @@ import random
 
 from contentsApp.models import *
 from accountApp.models import Profile
-
+from .forms import *
 
 # Create your views here.
+
+def webtoon_detail(request, id):
+    webtoon = Webtoon.objects.get(pk=id)
+   
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon})
 
 def Rated(request):
     return render(request, "random_list.html")
@@ -129,3 +135,5 @@ def get_random_webtoon(number_of_webtoons=1):
         webtoon_list.add(webtoon)
 
     return webtoon_list
+  
+  
