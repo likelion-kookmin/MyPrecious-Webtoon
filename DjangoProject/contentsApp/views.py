@@ -11,17 +11,6 @@ import random
 from contentsApp.models import *
 from accountApp.models import Profile
 
-
-# Create your views here.
-
-def Rated(request):
-    return render(request, "random_list.html")
-
-
-def Rating(request):
-    return render(request, "random_list.html")
-
-
 @csrf_exempt
 def Search(request):
     search_word = request.GET.get("keyword")
@@ -81,7 +70,6 @@ def subscribe(request):
         subscribes = user.profile.subscribes
 
         webtoon_id = request.POST.get("id")
-        print(webtoon_id)
         webtoon = get_object_or_404(Webtoon, pk=webtoon_id)
 
         isSubscribed = subscribes.filter(pk=webtoon_id).exists()
@@ -100,8 +88,17 @@ def subscribe(request):
             "data": html,
             "msg": msg
         }
-        print(ctx)
     return JsonResponse(ctx)
+
+
+def rated_webtoon_list(request):
+    user = request.user
+    rated_webtoons = user.rated_webtoons_by_me.values_list("webtoon", flat=True)
+    rating_scores = user.rated_webtoons_by_me.values_list(["webtoon__pk", "score"], flat=True)
+    ctx = {
+        "webtoon_list": rated_webtoons,
+    }
+
 
 
 def Random(request):
