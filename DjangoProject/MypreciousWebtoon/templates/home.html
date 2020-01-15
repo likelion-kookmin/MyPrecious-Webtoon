@@ -5,5 +5,15 @@
 {% endblock %}
 
 {% block contents %}
-Hello
+<div class="container">
+    {% block body %}
+    {% include "messages.html" %}
+
+
+    <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li>
+
+
+    {% block content %}
+    {% endblock %}
+    {% endblock %}
 {% endblock %}
