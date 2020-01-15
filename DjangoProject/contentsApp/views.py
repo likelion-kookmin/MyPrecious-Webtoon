@@ -11,6 +11,15 @@ import random
 from contentsApp.models import *
 from accountApp.models import Profile
 
+
+# Create your views here.
+
+def webtoon_detail(request, id):
+    webtoon = Webtoon.objects.get(pk=id)
+
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon})
+
+
 @csrf_exempt
 def Search(request):
     search_word = request.GET.get("keyword")
@@ -22,7 +31,7 @@ def Search(request):
     profile = Profile.objects.get(user__id=request.user.id)
     subscribe_webtoons = profile.subscribes.all().order_by("id")
     subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
-    
+
     paginator = Paginator(by_name, 5)
     page = request.GET.get('page')
     try:
@@ -41,7 +50,8 @@ def Search(request):
     except EmptyPage:
         wts_search_by_cartoonists = Paginator1.get_page(paginator1.num_pages)
     return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
-                                                "wts_search_by_cartoonists": wts_search_by_cartoonists, "checkList":subscribe_webtoon_ids})
+                                                "wts_search_by_cartoonists": wts_search_by_cartoonists,
+                                                "checkList": subscribe_webtoon_ids})
 
 
 def subscribe_list(request):
@@ -100,7 +110,6 @@ def rated_webtoon_list(request):
     }
 
 
-
 def Random(request):
     per_page = 5
     webtoons = get_random_webtoon(per_page)
@@ -109,7 +118,7 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList":subscribes})
+    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList": subscribes})
 
 
 def get_random_webtoon(number_of_webtoons=1):
