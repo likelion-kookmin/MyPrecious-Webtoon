@@ -20,6 +20,8 @@
   <title>{% block head_title %}{% endblock %}</title>
   {% block extra_head %}
   {% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   
 </head>
 
@@ -27,7 +29,9 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-top:10px;">
     <a class="navbar-brand" href="/" style="margin-left:180px;margin-right:80px;">
-      <p1>MPW</p1>
+      <!--<p1>MPW</p1>-->
+      {% load staticfiles %}
+      <img src="{% static 'mpw_logo.png'%}" alt="logo" style="width: 60px; height: 64px; margin-left:50px;">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +41,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
           <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'contentsApp:search' %}">
-              <input class="form-control mr-sm-2" type="text" name="keyword" style="width:1000px;">
+              <input class="form-control mr-sm-2" type="text" name="keyword" style="width:800px;">
               <button class="btn btn-outline-primary my-6 my-sm-0" type="submit">Search</button>
               
           </form>
@@ -46,7 +50,7 @@
 
 
         </li>
-        <li class="nav-item dropdown" style="margin-left:30px;">
+        <li class="nav-item dropdown" style="margin-left:25px;">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
 
