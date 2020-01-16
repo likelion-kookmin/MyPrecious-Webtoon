@@ -73,13 +73,13 @@
       <div class="navbar-item">
         <div class="buttons">
           {% if user.is_authenticated %}
-          <a class="button is-primary is-rounded" href="{% url 'account_logout' %}">
+          <a class="button is-link is-rounded" href="{% url 'account_logout' %}">
             <strong>logout</strong>
           </a>
 
           {% else %} <div>
             <a class="button is-rounded" href="{% url 'account_login' %}">LogIn</a>
-            <a class="button is-primary is-rounded" href="{% url 'account_signup' %}">Sign Up</a></div>
+            <a class="button is-link is-rounded" href="{% url 'account_signup' %}">Sign Up</a></div>
           {% endif %}
 
 

@@ -5,15 +5,27 @@
 {% endblock %}
 
 {% block contents %}
-<div class="container">
-    {% block body %}
-    {% include "messages.html" %}
 
 
-    <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li>
+{% block body %}
 
-
-    {% block content %}
-    {% endblock %}
-    {% endblock %}
+<body style="background-color:hsl(217, 71%, 53%);height:900px;">
+    <div>
+        {% include "messages.html" %}
+        <div style="margin-left:0px; margin-top:150px;">
+            <div style="text-align: center;">
+                <h1 class="display-2" style=" color:beige"><b>WELCOME !<br> MY PRECIOUS WEBTOON</b></h1><br><br><br>
+                <a class="button is-link is-inverted is-outlined"
+                    style="text-align: center;width:200px; height:100px;font-size: x-large;"
+                    href="{% url 'contentsApp:random' %}">웹툰취향셔플</a>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        {% endblock %}</div>
+</body>
 {% endblock %}
+<style  type="text/css">
+    a.no-uline { text-decoration:none; }
+    a.noul:hover { text-decoration:none; }
+</style>
