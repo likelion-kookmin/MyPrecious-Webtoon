@@ -1,71 +1,75 @@
 {% extends 'base.html' %}
 {% block title %}
-홈
+    홈
 {% endblock %}
 {% block content %}
-<div class="columns" style="margin-top:50px; margin-bottom:70px;margin-left:50px;">
-    <div class="column">
-        <div class="episode__aside">
-            <div class="episode__thumbnail">
-                <br><br><br>
-                <img src="https://pbs.twimg.com/media/D5o4PC2U8AE8utH.jpg" alt="{{ webtoon.name}} 썸네일" class="img-deco"
-                    style="width:250px; height:300px;margin-right:70px;">
-                <br><br>
+    <div class="columns" style="margin-top:50px; margin-bottom:70px;margin-left:50px;">
+        <div class="column">
+            <div class="episode__aside">
+                <div class="episode__thumbnail">
+                    <br><br><br>
+                    <img src="https://pbs.twimg.com/media/D5o4PC2U8AE8utH.jpg" alt="{{ webtoon.name }} 썸네일"
+                         class="img-deco"
+                         style="width:250px; height:300px;margin-right:70px;">
+                    <br><br>
 
-                <a class="button is-link is-rounded" href="{{ webtoon.url }}" role="button"
-                    style="margin-left:75px;">보러가기</a>
+                    <a class="button is-link is-rounded" href="{{ webtoon.url }}" role="button"
+                       style="margin-left:75px;">보러가기</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="column is-half" style="border-right:1px solid #E6E6E6;">
-        <main class="episode__main">
-            <div class="episode__header">
-                <h1><b style="font-size: xx-large; color: #2E64FE;">{{webtoon.name}}</b></h1>
-                <br>
-                <div>
-                    <dl class="episode__author">
-                        <div style='text-align: inline;'><b>글/그림</b>&nbsp;
-                            {% for i in webtoon.cartoonists.all %}
-                            {{ i }}
-                            {% endfor %}&nbsp;<b>연재</b>&nbsp;{{ webtoon.content_provider }}&nbsp;&nbsp;&nbsp;&nbsp;<b>연령대</b>&nbsp;{{ webtoon.age_rating }}
+        <div class="column is-half" style="border-right:1px solid #E6E6E6;">
+            <main class="episode__main">
+                <div class="episode__header">
+                    <h1><b style="font-size: xx-large; color: #2E64FE;">{{ webtoon.name }}</b></h1>
+                    <br>
+                    <div>
+                        <dl class="episode__author">
+                            <div style='text-align: inline;'><b>글/그림</b>&nbsp;
+                                {% for i in webtoon.cartoonists.all %}
+                                    {{ i }}
+                                {% endfor %}
+                                &nbsp;<b>연재</b>&nbsp;{{ webtoon.content_provider }}&nbsp;&nbsp;&nbsp;&nbsp;<b>연령대</b>&nbsp;{{ webtoon.age_rating }}
 
-                        </div>
-                    </dl>
+                            </div>
+                        </dl>
+                        <hr>
+                    </div>
+
+                    <div class="episode__summary">
+                        <b>줄거리</b><br>
+                        {{ webtoon.description|safe }}
+                    </div>
                     <hr>
-                </div>
+                    <span class="episode__tags">
 
-                <div class="episode__summary">
-                    <b>줄거리</b><br>
-                    {{ webtoon.description|safe }}
-                </div>
-                <hr>
-                <span class="episode__tags">
-
-                    {% for i in webtoon.tags.all %}<button class="button is-link is-outlined"
-                        style="width: 8rem;height:2rem;margin-right:0.5rem;">
+                    {% for i in webtoon.tags.all %}
+                        <button class="button is-link is-outlined"
+                                style="width: 8rem;height:2rem;margin-right:0.5rem;">
                         <h6>
                             <p>#{{ i }}</p>
                         </h6>
-                        {% endfor %}
-                    </button>
+                    {% endfor %}
+                        </button>
 
 
                 </span>
-                <br><br><br>
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                            role="tab" aria-controls="nav-home" aria-selected="true">별점</a>
-                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
-                            role="tab" aria-controls="nav-profile" aria-selected="false">리뷰</a>
-                    </div>
-                </nav>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <br><br><b>나의 별점</b><br><br><b>마프웹
+                    <br><br><br>
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                               role="tab" aria-controls="nav-home" aria-selected="true">별점</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                               role="tab" aria-controls="nav-profile" aria-selected="false">리뷰</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                             aria-labelledby="nav-home-tab">
+                            <br><br><b>나의 별점</b><br><br><b>마프웹
                             별점</b></div>
-                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        <!-- <div id="comment">
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <!-- <div id="comment">
                             {% for comment in post.comments.all %}
                             <div class="comment-list">
                                 <a href="#">{{ comment.author }}</a>
@@ -91,15 +95,14 @@
 
                     </div> -->
 
-                </div>
-            </div>
-        </main>
-    </div>
-    <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
+                        </div>
+                    </div>
+            </main>
+        </div>
+        <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
 
 
-
-    <!-- <div class="container" style="margin-top:70px; margin-bottom:70px;">
+        <!-- <div class="container" style="margin-top:70px; margin-bottom:70px;">
         <div class="row">
             <div class="col">
                 <div class="episode__aside">
@@ -167,7 +170,7 @@
                                     {% for comment in post.comments.all %}
                                     <div class="comment-list">
                                       <a href="#">{{ comment.author }}</a> -->
-    <!-- <small>{{ comment.created_date }}</small>
+            <!-- <small>{{ comment.created_date }}</small>
                                         <p>{{ comment.text|linebreaks }}</p>
                                     </div>
                                     {% empty %}
@@ -191,6 +194,6 @@
  -->
 
 
-</div>
+    </div>
 
 {% endblock %}
