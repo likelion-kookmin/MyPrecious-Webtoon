@@ -45,13 +45,10 @@
                     <span class="episode__tags">
 
                     {% for i in webtoon.tags.all %}
-                        <button class="button is-link is-outlined"
-                                style="width: 8rem;height:2rem;margin-right:0.5rem;">
-                        <h6>
-                            <p>#{{ i }}</p>
-                        </h6>
+                    <div class="button is-link is-outlined" style="width: 8rem;height:2rem;margin-right:0.5rem;">
+                        <a href="{% url 'contentsApp:tag_list'%}?tag={{i}}">#{{ i }}</a>
+                    </div>
                     {% endfor %}
-                        </button>
 
 
                 </span>
@@ -70,38 +67,34 @@
                             <br><br><b>나의 별점</b><br><br><b>마프웹
                             별점</b></div>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <!-- <div id="comment">
-                            {% for comment in post.comments.all %}
-                            <div class="comment-list">
-                                <a href="#">{{ comment.author }}</a>
-                                
-                                <p>{{ comment.text|linebreaks }}</p>
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                <div id="comment">
+                                    <form action="{% url 'contentsApp:comment_create' webtoon.id %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ form }}
+                                        <input type="submit" value="Comment">
+        
+                                    </form>
+                                    {% for comment in comments %}
+                                    <div class="comment-list">
+                                        <a>{{ comment.user }}</a>
+                                        <p>{{ comment.text|linebreaks }}</p>
+                                        <a href="{% url 'contentsApp:comment_delete' comment.id %}">삭제하기</a>
+                                    </div>
+                                    {% empty %}
+                                    <div class="comment-list">
+                                        <p>작성된 댓글이 없습니다!</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+        
                             </div>
-                            {% empty %}
-                            <div class="comment-list">
-                                <p>작성된 댓글이 없습니다!</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        
-                        {% if request.user.is_active %}
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form.as_p }}
-                            <button type="submit" class="btn btn-primary">댓글 작성</button>
-                        </form>
-                        {% else %}
-                        <div class="alert alert-warning">로그인된 사용자만 댓글을 작성할 수 있습니다.</div>
-                        {% endif %}
-
-                    </div> -->
-
                         </div>
                     </div>
-            </main>
-        </div>
-        <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
-
+                </main>
+            </div>
+            <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
+        
 
         <!-- <div class="container" style="margin-top:70px; margin-bottom:70px;">
         <div class="row">
