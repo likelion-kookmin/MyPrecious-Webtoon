@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+import webtoonList.views
 
 
 
@@ -27,7 +28,7 @@ urlpatterns = [
     path('account/', include('accountApp.urls')),
     path('accounts/', include('allauth.urls')),
     path('contents/', include('contentsApp.urls')),
-    path('', include('contentsApp.urls')),
+    path('', include('webtoonList.urls')),
 ]
 
 # media file serve
