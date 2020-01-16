@@ -57,6 +57,11 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+ACCOUNT_FORMS = {
+    'login': 'accountApp.forms.MyLoginForm',
+    'signup': 'accountApp.forms.MySignupForm'
+}
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

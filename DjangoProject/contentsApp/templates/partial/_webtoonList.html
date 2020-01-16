@@ -3,6 +3,7 @@
         {% include "partial/_webtoon.html" %}
     {% endfor %}
 </div>
+
 <br><br><br>
 <div style="text-align: center; margin-bottom:30px;">
     {% if webtoon_list %}
@@ -39,6 +40,7 @@
         // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
         var subscribe_url = new URL("http://{{request.get_host}}{% url 'contentsApp:subscribe'%}");
     </script>
+
 
     <script>
         // 윈도우가 로드될 때 버튼에 click 이벤트를 연결해준다.
@@ -104,4 +106,6 @@
             return "";
         }
     </script>
+
 {% endblock %}
+
