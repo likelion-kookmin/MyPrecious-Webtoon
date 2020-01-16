@@ -63,6 +63,8 @@ class CustomUser(AbstractBaseUser):
     relations = models.ManyToManyField("self", related_name="+",
                                        symmetrical=False, through="Relation")
 
+    rates = models.ManyToManyField("self", through='Rate', related_name="+", symmetrical=False)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -104,6 +106,20 @@ class CustomUser(AbstractBaseUser):
             except django.db.utils.IntegrityError:
                 self.relations_by_from_user.filter(to_user=to_user).delete()
                 return False
+
+    @property
+    def rated_webtoons_by_me(self):
+        rated_webtoons = self.rated_webtoons_by_me.all()
+        return rated_webtoons
+
+    def rate_webtoon(self, webtoon_id, rate_score):
+        webtoon = Webtoon.objects.filter(pk=webtoon_id)
+        try:
+            self.rated_webtoon_by_me.create(webtoon=webtoon, score=rate_score)
+            return True
+        except django.db.utils.IntegrityError:
+            self.rated_webtoon_by_me.filter(webtoon=webtoon).delete()
+            return False
 
 
 class Profile(models.Model):
@@ -162,3 +178,21 @@ class Relation(models.Model):
 
     def __str__(self):
         return f'({self.from_user.email} -> {self.to_user.email})'
+
+
+class Rate(models.Model):
+    RATE_RANGE = (
+        (1, "1점"),
+        (2, "2점"),
+        (3, "3점"),
+        (4, "4점"),
+        (5, "5점"),
+    )
+    webtoon = models.ForeignKey(Webtoon, on_delete=models.CASCADE, null=True,
+                                related_name="rated_webtoon_by_me")
+    user = models.ForeignKey(Profile, on_delete=models, null=True,
+                             related_name="from_user")
+    score = models.IntegerField(blank=True, null=True, choices=RATE_RANGE)
+
+    class Meta:
+        unique_together = ("user", "webtoon",)
