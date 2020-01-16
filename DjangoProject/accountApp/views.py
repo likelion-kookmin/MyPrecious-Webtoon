@@ -119,3 +119,5 @@ def rate_webtoon(request):
             "msg": msg
         }
     return JsonResponse(ctx)
+
+
