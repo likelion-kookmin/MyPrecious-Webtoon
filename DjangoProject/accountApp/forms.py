@@ -10,7 +10,7 @@ class LoginForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', )
+        fields = ('email', 'password',)
 
     def clean(self):
         clean_data = super().clean()
@@ -35,7 +35,7 @@ class SingupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'confirm_password', )
+        fields = ('email', 'password', 'confirm_password',)
 
     def clean(self):
         cleaned_data = super(SingupForm, self).clean()
@@ -44,4 +44,3 @@ class SingupForm(forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError("password and confirm_password does not match")
-

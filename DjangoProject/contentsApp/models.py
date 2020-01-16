@@ -1,5 +1,7 @@
 import django
 from django.db import models
+
+
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
@@ -21,7 +23,8 @@ class Webtoon(models.Model):
             if not i.isFree:
                 is_free = False
                 break
-        return is_free    
+        return is_free
+
 
 class Cartoonist(models.Model):
     image = models.URLField(null=True, max_length=200)
