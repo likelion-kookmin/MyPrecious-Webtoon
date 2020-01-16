@@ -1,137 +1,153 @@
 {% extends "base.html" %}
 
 {% block title %}
-    유저 목록
+유저 목록
 {% endblock %}
 {% block extra_head %}
 
 {% endblock %}
 
 {% block content %}
-    <h1 class="title">{{ user.profile.nickname }}({{ user.email }})님의 프로필</h1>
-    {% include "partial/_user.html" with person=user %}
+<br>
+<h1 class="title is-2" style="color:hsl(217, 71%, 53%);text-align: center;">
+    <b>{{ user.profile.nickname }}({{ user.email }})</b>'s Profile</h1>
 
-    <div class="tabs">
-        <ul>
-            <li class="is-active"><a>Followers</a></li>
-            <li><a>Following</a></li>
-        </ul>
+<hr>
+<div class="columns">
+    <div class="column is-half" style="border-right:1px solid #E6E6E6;">
+        <div style="text-align: center;">
+
+            <div>
+                {% include "partial/_user.html" with person=user %}</div>
+        </div>
     </div>
-    {% include "partial/_userList.html" %}
+    <div class="column">
+        <div class="tabs"style="margin-left:50px;">
+            <ul >
+                <li class="is-active"><a>Followers</a></li>
+                <li><a>Following</a></li>
+            </ul >
+        </div>
+        {% include "partial/_userList.html" %}
+    </div>
+
+
+
+</div>
 {% endblock %}
 
 {% block extra_body %}
-    <script type="text/javascript">
-        // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
-        var follow_list_url = new URL("http://{{ request.get_host }}{% url 'accounts:follow_list'%}");
-    </script>
+<script type="text/javascript">
+    // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
+    var follow_list_url = new URL("http://{{ request.get_host }}{% url 'accounts:follow_list'%}");
+</script>
 
-    <script type="text/javascript">
-        window.onload = function () {
-            tabs = document.querySelectorAll("div.tabs > ul > li");
-            tabs.forEach((tab) => {
-                tab.addEventListener("click", changeTab);
-            });
+<script type="text/javascript">
+    window.onload = function () {
+        tabs = document.querySelectorAll("div.tabs > ul > li");
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", changeTab);
+        });
+        follow_buttons = document.querySelectorAll(".content button");
+        follow_buttons.forEach(button => {
+            button.addEventListener('click', follow);
+        });
+    };
+
+    function changeTab(event) {
+        // href 링크로 들어가는것을 방지
+        event.preventDefault();
+
+        // 탭을 선택할 때마다 활성화되는 탭을 바꿔준다.
+        tabs.forEach((tab) => {
+            if (tab.innerText == event.target.innerText) {
+                tab.className = "is-active"
+            } else {
+                tab.className = ""
+            }
+        });
+
+        // 데이터 요청
+        let url = follow_list_url;
+        let query = new URLSearchParams();
+        query.set("type", event.target.innerText);
+        url.search = query.toString();
+
+        fetch(url, {
+            method: 'GET',
+        }).then((res) => {
+            res.json()
+                .then((json) => {
+                    console.log(json);
+                    render(json["target"], json["data"], json["msg"], "list");
+                }
+                )
+        }).catch(err => console.error(err));
+    }
+
+    // 데이터를 가져와서 target을 렌더링한 HTML 데이터로 치환
+    function render(target, data, messages = "", renderType = "list") {
+        if (renderType == "list") {
+            target_dom = document.querySelector(`#${target}`);
+            target_dom.outerHTML = data;
+
+
             follow_buttons = document.querySelectorAll(".content button");
             follow_buttons.forEach(button => {
                 button.addEventListener('click', follow);
             });
-        };
-
-        function changeTab(event) {
-            // href 링크로 들어가는것을 방지
-            event.preventDefault();
-
-            // 탭을 선택할 때마다 활성화되는 탭을 바꿔준다.
-            tabs.forEach((tab) => {
-                if (tab.innerText == event.target.innerText) {
-                    tab.className = "is-active"
-                } else {
-                    tab.className = ""
-                }
-            });
-
-            // 데이터 요청
-            let url = follow_list_url;
-            let query = new URLSearchParams();
-            query.set("type", event.target.innerText);
-            url.search = query.toString();
-
-            fetch(url, {
-                method: 'GET',
-            }).then((res) => {
-                res.json()
-                    .then((json) => {
-                            console.log(json);
-                            render(json["target"], json["data"], json["msg"], "list");
-                        }
-                    )
-            }).catch(err => console.error(err));
+        } else {
+            target_dom = document.querySelector(`#user-${target}`);
+            target_dom.outerHTML = data;
+            target_button = document.querySelector(`#btn-${target}`);
+            target_button.addEventListener('click', follow);
         }
+        if (messages) {
+            message_dom = document.querySelector(`#messages`);
+            message_dom.outerHTML = messages;
+        }
+    }
 
-        // 데이터를 가져와서 target을 렌더링한 HTML 데이터로 치환
-        function render(target, data, messages = "", renderType = "list") {
-            if (renderType == "list") {
-                target_dom = document.querySelector(`#${target}`);
-                target_dom.outerHTML = data;
+    function follow(event) {
+        url = "{% url 'accounts:follow' %}";
+        id = event.target.name.toString();
+        formData = new URLSearchParams();
+        formData.set("id", id);
 
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie("csrftoken"),
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        }).then((res) => {
+            res.json()
+                .then((json) => {
+                    console.log(json);
+                    render(json["target"], json["data"], json["msg"], "user");
+                }
+                )
+        }).catch(err => console.error(err));
+    }
 
-                follow_buttons = document.querySelectorAll(".content button");
-                follow_buttons.forEach(button => {
-                    button.addEventListener('click', follow);
-                });
-            } else {
-                target_dom = document.querySelector(`#user-${target}`);
-                target_dom.outerHTML = data;
-                target_button = document.querySelector(`#btn-${target}`);
-                target_button.addEventListener('click', follow);
+    // Cookie를 가져와 POST요청에 필요한 csrf token을 가져올 때 사용한다.
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-            if (messages) {
-                message_dom = document.querySelector(`#messages`);
-                message_dom.outerHTML = messages;
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
             }
         }
-
-        function follow(event) {
-            url = "{% url 'accounts:follow' %}";
-            id = event.target.name.toString();
-            formData = new URLSearchParams();
-            formData.set("id", id);
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie("csrftoken"),
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: formData
-            }).then((res) => {
-                res.json()
-                    .then((json) => {
-                            console.log(json);
-                            render(json["target"], json["data"], json["msg"], "user");
-                        }
-                    )
-            }).catch(err => console.error(err));
-        }
-
-        // Cookie를 가져와 POST요청에 필요한 csrf token을 가져올 때 사용한다.
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-    </script>
+        return "";
+    }
+</script>
 {% endblock %}

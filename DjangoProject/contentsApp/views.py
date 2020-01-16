@@ -85,7 +85,7 @@ def subscribe_list(request):
     except EmptyPage:
         wts = Paginator.get_page(paginator.num_pages)
     return render(request, "webtoon_list.html",
-                  {"title": "구독한 웹툰들", "webtoons": wts, "checkList": subscribe_webtoon_ids})
+                  {"title": "구독 중인 웹툰", "webtoons": wts, "checkList": subscribe_webtoon_ids})
 
 
 def subscribe(request):
@@ -128,7 +128,7 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList":subscribes})
+    return render(request, "webtoon_list.html", {"title": "MY PRECIOUS WEBTOON", "webtoons": webtoons, "checkList":subscribes})
 
 
 def get_random_webtoon(number_of_webtoons=1):
