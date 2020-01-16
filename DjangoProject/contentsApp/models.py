@@ -1,6 +1,5 @@
+import django
 from django.db import models
-
-
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
@@ -77,9 +76,10 @@ class Episode(models.Model):
 #         return f"{self.user}님이 {self.webtoon.name}을 {self.since}부터 구독중입니다."
 
 # class Comment(models.Model):
-#     user = models.ForeignKey('', on_delete=models.CASCADE)
-#     webtoon = models.ForeignKey('Webtoon', on_delete=models.CASCADE)
-#     when = models.DateTimeField(auto_now=True)
-#     comment = models.TextField()
+#     author = models.ForeignKey('Profile.User', on_delete=models.CASCADE)
+#     post = models.ForeignKey('Post', related_name='comments', on_delete = models.CASCADE)
+#     text = models.TextField()
+#     # created_date = models.DateTimeField(default=timezone.now)
 
-# class CommnetLike
+#     def __str__(self):
+#         return self.text
