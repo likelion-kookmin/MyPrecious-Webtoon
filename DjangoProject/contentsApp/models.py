@@ -1,5 +1,12 @@
 import django
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
@@ -21,7 +28,18 @@ class Webtoon(models.Model):
             if not i.isFree:
                 is_free = False
                 break
-        return is_free    
+        return is_free
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    webtoon = models.ForeignKey(Webtoon, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    like = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return (self.user.email if self.user else "익명") + "의 댓글"
 
 class Cartoonist(models.Model):
     image = models.URLField(null=True, max_length=200)
@@ -66,20 +84,3 @@ class Episode(models.Model):
 
     def __str__(self):
         return f"{self.webtoon.name} {[self.number]} \"{self.title}\" ({self.created})"
-
-# class Subscribe(models.Model):
-#     user = models.ForeignKey('', on_delete=models.CASCADE)
-#     webtoon = models.ForeignKey('Webtoon', on_delete=models.CASCADE)
-#     since = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return f"{self.user}님이 {self.webtoon.name}을 {self.since}부터 구독중입니다."
-
-# class Comment(models.Model):
-#     author = models.ForeignKey('Profile.User', on_delete=models.CASCADE)
-#     post = models.ForeignKey('Post', related_name='comments', on_delete = models.CASCADE)
-#     text = models.TextField()
-#     # created_date = models.DateTimeField(default=timezone.now)
-
-#     def __str__(self):
-#         return self.text

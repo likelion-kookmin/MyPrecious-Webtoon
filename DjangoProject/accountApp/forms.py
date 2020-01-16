@@ -6,6 +6,7 @@ from allauth.account.forms import LoginForm, SignupForm
 User = get_user_model()
 
 
+
 class MyLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super(MyLoginForm, self).__init__(*args, **kwargs)
@@ -29,4 +30,5 @@ class MySignupForm(SignupForm):
         self.fields['password1'].label = "password"
         self.fields['password2'].label = "confirm password"
     
+
 

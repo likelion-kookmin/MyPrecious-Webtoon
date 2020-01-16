@@ -12,10 +12,11 @@ django.setup()
 # 모델 임포트는 django setup이 끝난 후에 가능하다. 셋업 전에 import하면 에러난다. db connection 정보가 없어서......
 from contentsApp.models import *
 
+
 @transaction.atomic
 def set_content_providers():
     providers_list = ["네이버웹툰", "다음웹툰", "레진", "미소설", "미스터블루", "배틀코믹스", "저스툰", "케이툰", "탑툰", "투믹스"]
-    
+
     for i in providers_list:
         try:
             ContentProvider.objects.get(name=i)
@@ -28,8 +29,9 @@ def set_content_providers():
 @transaction.atomic
 def set_rating_systems():
     # http://www.zdnet.co.kr/view/?no=20190517090610
-    ratings_list = ["미등록", "전체연령가", "12세 이상 이용가", "15세 이상 이용가", "18세 이상 이용가"] # 만나이?, 한국나이?      네이버는 만나이https://m.help.naver.com/support/contents/contentsView.help?contentsNo=1766&lang=ko
-    
+    ratings_list = ["미등록", "전체연령가", "12세 이상 이용가", "15세 이상 이용가",
+                    "18세 이상 이용가"]  # 만나이?, 한국나이?      네이버는 만나이https://m.help.naver.com/support/contents/contentsView.help?contentsNo=1766&lang=ko
+
     for i in ratings_list:
         try:
             AgeRatingSystem.objects.get(rating=i)
@@ -37,12 +39,14 @@ def set_rating_systems():
             rating = AgeRatingSystem()
             rating.rating = i
             rating.save()
-    
+
+
 @transaction.atomic
 def update_new_cartoon():
     update_naver()
     update_daum()
     update_lezhin()
+
 
 @transaction.atomic
 def update_naver():
@@ -54,19 +58,19 @@ def update_naver():
     soup = BeautifulSoup(res.content, 'html.parser')
     li = soup.select('#content > div.all_list.all_text > div > ul > li > a')
 
-
     for i in li:
         naver_cartoon_urls.append('https://comic.naver.com' + i.get('href'))
-    
+
     provider_naver = ContentProvider.objects.get(name='네이버웹툰')
-    
+
     for i in naver_cartoon_urls:
         res = requests.get(i)
         soup = BeautifulSoup(res.content, 'html.parser')
         so = soup.select_one('div.comicinfo > div.detail > h2')
         cartoon_name = str(so).split('<')[1].split('\t')[-1].strip()
         print("cartoon_name: ", cartoon_name)
-        cartoonists = soup.select_one('#content > div.comicinfo > div.detail > h2 > span.wrt_nm').get_text().strip().split(' / ')
+        cartoonists = soup.select_one(
+            '#content > div.comicinfo > div.detail > h2 > span.wrt_nm').get_text().strip().split(' / ')
         description = soup.select_one('div.comicinfo > div.detail > p:nth-child(2)')
         try:
             age = soup.select_one('div.comicinfo > div.detail > p.detail_info > span.age').get_text()
@@ -74,7 +78,8 @@ def update_naver():
             age = None
         tags = []
         try:
-            tags = soup.select_one('#content > div.comicinfo > div.detail > p.detail_info > span.genre').get_text().split(', ')
+            tags = soup.select_one(
+                '#content > div.comicinfo > div.detail > p.detail_info > span.genre').get_text().split(', ')
         except:
             print()
             print()
@@ -86,6 +91,7 @@ def update_naver():
             this_cartoon = Webtoon()
             this_cartoon.content_provider = provider_naver
         this_cartoon.name = cartoon_name
+        this_cartoon.image = image
         this_cartoon.description = str(description)
         this_cartoon.url = i
         this_cartoon.save()
@@ -124,7 +130,7 @@ def update_naver():
 
             this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
         this_cartoon.save()
-        
+
         # print("cartoon_name: ", cartoon_name)
         print("cartoonists: ", cartoonists)
         # print(description)
@@ -133,7 +139,7 @@ def update_naver():
         # print(image)
 
         print()
-    #Todo: 까뱅 등 일부 태그 가져오기 안됌, 컷툰 스마트툰과 같은 요소 태그로만들기, 유료화수, 이미지 리소스 url을 다운받아서 디비에 업로드, 요일과 연재중인지
+    # Todo: 까뱅 등 일부 태그 가져오기 안됌, 컷툰 스마트툰과 같은 요소 태그로만들기, 유료화수, 이미지 리소스 url을 다운받아서 디비에 업로드, 요일과 연재중인지
 
 
 @transaction.atomic
@@ -152,9 +158,9 @@ def update_daum():
     res = requests.get(finish).json()
     print(res['result']['status'])
     datas.append(res['data'])
-    
+
     for data in datas:
-        
+
         for i in data:
             cartoon_name = i['title']
             # print("cartoon_name: ", cartoon_name)
@@ -223,7 +229,7 @@ def update_daum():
 
                 this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
             this_cartoon.save()
-            
+
             # print("cartoon_name: ", cartoon_name)
             # print("cartoonists: ", cartoonists)
             # print(description)
@@ -233,7 +239,6 @@ def update_daum():
             # print(image)
 
             # print()
-
 
 
 @transaction.atomic
@@ -252,9 +257,9 @@ def update_lezhin():
     res = requests.get(finish).json()
     print(res['result']['status'])
     datas.append(res['data'])
-    
+
     for data in datas:
-        
+
         for i in data:
             cartoon_name = i['title']
             # print("cartoon_name: ", cartoon_name)
@@ -323,7 +328,7 @@ def update_lezhin():
 
                 this_cartoon.age_rating = AgeRatingSystem.objects.get(rating=age)
             this_cartoon.save()
-            
+
             # print("cartoon_name: ", cartoon_name)
             # print("cartoonists: ", cartoonists)
             # print(description)
@@ -333,7 +338,6 @@ def update_lezhin():
             # print(image)
 
             # print()
-
 
 
 @transaction.atomic
@@ -360,7 +364,6 @@ def test():
     # tags = soup.select_one('#content > div.comicinfo > div.detail > p.detail_info > span.genre').get_text().split(', ')
     # image = soup.select_one('#content > div.comicinfo > div.thumb > a > img').get('src')
     # print(so)
-
 
 
 if __name__ == "__main__":

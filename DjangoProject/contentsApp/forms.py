@@ -1,14 +1,12 @@
-# from django import forms
-# from .models import *
+from .models import Webtoon, Comment
+from django import forms
 
-# class CommentForm(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         fields = ('text',)
+class CommentForm(forms.ModelForm):
+    # text = forms.TextInput(label="댓글")
+    class Meta:
+        model = Comment
+        fields = ['text']
 
-#         widgets={
-#             "text":forms.Textarea(attrs={'placeholder':'배려와 매너가 밝은 커뮤니티를 만듭니다.','class':'form-control','rows':5}),
-#         }
-#         labels={
-#             "text":""
-#         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label = "댓글"
