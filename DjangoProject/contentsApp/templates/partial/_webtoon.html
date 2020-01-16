@@ -15,11 +15,17 @@
                 </div>
                 <div class="media-content">
                     <span>
-                        <p class="title is-4" style="color:hsl(217, 71%, 53%);"><a style="all:unset"
-                                                                                   href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a></p>
+                        <p class="title is-4" style="color:hsl(217, 71%, 53%);">
+                            <a style="all:unset" href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a></p>
                     </span>
                     <br>
-                    <p class="subtitle is-6"><b>{% for ct in webtoon.cartoonists.all %}@{{ ct }} {% endfor %}</b></p>
+                    <div class="subtitle is-6">
+                        {% for ct in webtoon.cartoonists.all %}
+                            <p class="tag is-medium">
+                                <a href="{% url 'contentsApp:search' %}?keyword={{ ct }}">{{ ct }}</a>
+                            </p>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
@@ -32,7 +38,11 @@
                     </tr>
                     <tr>
                         <th>장르</th>
-                        <td>{% for tag in webtoon.tags.all %}{{ tag }} {% endfor %}</td>
+                        <td>
+                            {% for tag in webtoon.tags.all %}
+                                <a href="{% url 'contentsApp:search' %}?keyword={{ tag }}">{{ tag }}</a>
+                            {% endfor %}
+                        </td>
                     </tr>
                     <tr>
                         <th>연령</th>

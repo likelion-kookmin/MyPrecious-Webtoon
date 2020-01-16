@@ -13,7 +13,7 @@ from accountApp.models import Profile
 
 
 # Create your views here.
-
+WEBTOON_PER_PAGE = 6
 
 def webtoon_detail(request, id):
     webtoon = Webtoon.objects.get(pk=id)
@@ -42,7 +42,7 @@ def Search(request):
     subscribe_webtoons = profile.subscribes.all().order_by("id")
     subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
 
-    paginator = Paginator(by_name, 5)
+    paginator = Paginator(by_name, WEBTOON_PER_PAGE)
     page = request.GET.get('page')
     try:
         wts_search_by_name = paginator.get_page(page)
@@ -51,7 +51,7 @@ def Search(request):
     except EmptyPage:
         wts_search_by_name = Paginator.get_page(paginator.num_pages)
 
-    paginator1 = Paginator(by_cartoonists, 5)
+    paginator1 = Paginator(by_cartoonists, WEBTOON_PER_PAGE)
     page = request.GET.get('page')
     try:
         wts_search_by_cartoonists = paginator1.get_page(page)
@@ -69,7 +69,7 @@ def subscribe_list(request):
     subscribe_webtoons = profile.subscribes.all().order_by("id")
     subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
 
-    paginator = Paginator(subscribe_webtoons, 5)
+    paginator = Paginator(subscribe_webtoons, WEBTOON_PER_PAGE)
     page = request.GET.get('page')
     try:
         wts = paginator.get_page(page)
@@ -121,8 +121,7 @@ def rated_webtoon_list(request):
 
 
 def Random(request):
-    per_page = 5
-    webtoons = get_random_webtoon(per_page)
+    webtoons = get_random_webtoon(WEBTOON_PER_PAGE)
     subscribes = request.user.profile.subscribes.values_list("id", flat=True)
 
     # 시간 테스트
