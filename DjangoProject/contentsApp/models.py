@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
@@ -30,6 +29,7 @@ class Webtoon(models.Model):
                 break
         return is_free
 
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     webtoon = models.ForeignKey(Webtoon, on_delete=models.CASCADE, related_name='comments')
@@ -37,9 +37,10 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     like = models.IntegerField(default=0)
-    
+
     def __str__(self):
         return (self.user.email if self.user else "익명") + "의 댓글"
+
 
 class Cartoonist(models.Model):
     image = models.URLField(null=True, max_length=200)

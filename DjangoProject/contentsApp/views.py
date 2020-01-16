@@ -5,22 +5,23 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.views.generic.edit import CreateView
 
 import random
 
-from contentsApp.models import *
+from .models import Webtoon, Comment
+from .forms import CommentForm
 from accountApp.models import Profile
-from .form import CommentForm
 
 # Create your views here.
 WEBTOON_PER_PAGE = 6
+
 
 def webtoon_detail(request, id):
     webtoon = get_object_or_404(Webtoon, pk=id)
     comment_form = CommentForm()
     comments = webtoon.comments.all()
-    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form})
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments": comments, "form": comment_form})
+
 
 def comment_create(request, id):
     if request.method == "POST":
@@ -31,8 +32,9 @@ def comment_create(request, id):
             comment = comment_form.save()
     return redirect('contentsApp:detail', id)
 
+
 def comment_delete(request, id):
-    delete_comment = Comment.objects.get(pk = id)
+    delete_comment = Comment.objects.get(pk=id)
     webtoon_id = delete_comment.webtoon.id
     delete_comment.delete()
     return redirect('contentsApp:detail', webtoon_id)
@@ -153,6 +155,7 @@ def get_random_webtoon(number_of_webtoons=1):
 
     return webtoon_list
 
+
 def tag_list(request):
     tag = request.GET.get("tag")
     webtoons = Webtoon.objects.all().order_by("id")
@@ -165,4 +168,4 @@ def tag_list(request):
     paginator = Paginator(by_tag, 5)
     page = request.GET.get('page')
     return render(request, "webtoon_list.html", {"title": tag, "webtoons": by_tag,
-                                            "checkList": subscribe_webtoon_ids})
+                                                 "checkList": subscribe_webtoon_ids})
