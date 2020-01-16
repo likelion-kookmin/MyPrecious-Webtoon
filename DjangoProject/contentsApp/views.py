@@ -30,7 +30,6 @@ def webtoon_detail(request, id):
     return render(request, 'webtoon_detail.html', {'webtoon': webtoon})
 
 
-
 @csrf_exempt
 def Search(request):
     search_word = request.GET.get("keyword")
@@ -129,7 +128,8 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "MY PRECIOUS WEBTOON", "webtoons": webtoons, "checkList":subscribes})
+    return render(request, "webtoon_list.html",
+                  {"title": "MY PRECIOUS WEBTOON", "webtoons": webtoons, "checkList": subscribes})
 
 
 def get_random_webtoon(number_of_webtoons=1):
@@ -142,7 +142,10 @@ def get_random_webtoon(number_of_webtoons=1):
     webtoon_list = set()
     while len(webtoon_list) < number_of_webtoons:
         pk = random.randint(1, max_id)
-        webtoon = Webtoon.objects.get(pk=pk)
-        webtoon_list.add(webtoon)
+        try:
+            webtoon = Webtoon.objects.get(pk=pk)
+            webtoon_list.add(webtoon)
+        except:
+            continue
 
     return webtoon_list
