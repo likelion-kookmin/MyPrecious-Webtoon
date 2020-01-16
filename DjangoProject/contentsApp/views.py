@@ -129,11 +129,7 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-<<<<<<< HEAD
     return render(request, "webtoon_list.html", {"title": "MY PRECIOUS WEBTOON", "webtoons": webtoons, "checkList":subscribes})
-=======
-    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList": subscribes})
->>>>>>> 39b6c9cd0ec777bf80f83d6ffff18d644c9e89eb
 
 
 def get_random_webtoon(number_of_webtoons=1):
