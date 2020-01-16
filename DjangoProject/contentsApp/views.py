@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Max
@@ -11,21 +10,25 @@ import random
 
 from contentsApp.models import *
 from accountApp.models import Profile
-from .forms import *
+
 
 # Create your views here.
 
+
 def webtoon_detail(request, id):
     webtoon = Webtoon.objects.get(pk=id)
-   
+    # if request.method == "POST":
+    #     form = CommentForm(request.POST)
+    #     if form.is_valid():
+    #         comment = form.save(commit=False)
+    #         comment.author = request.user
+    #         comment.post = post
+    #         comment.save()
+    #         return redirect('webtoon_detail', pk=id)
+    # else:
+    #     form = CommentForm()
     return render(request, 'webtoon_detail.html', {'webtoon': webtoon})
 
-def Rated(request):
-    return render(request, "random_list.html")
-
-
-def Rating(request):
-    return render(request, "random_list.html")
 
 
 @csrf_exempt
@@ -39,7 +42,7 @@ def Search(request):
     profile = Profile.objects.get(user__id=request.user.id)
     subscribe_webtoons = profile.subscribes.all().order_by("id")
     subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
-    
+
     paginator = Paginator(by_name, 5)
     page = request.GET.get('page')
     try:
@@ -58,7 +61,8 @@ def Search(request):
     except EmptyPage:
         wts_search_by_cartoonists = Paginator1.get_page(paginator1.num_pages)
     return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
-                                                "wts_search_by_cartoonists": wts_search_by_cartoonists, "checkList":subscribe_webtoon_ids})
+                                                "wts_search_by_cartoonists": wts_search_by_cartoonists,
+                                                "checkList": subscribe_webtoon_ids})
 
 
 def subscribe_list(request):
@@ -75,7 +79,7 @@ def subscribe_list(request):
     except EmptyPage:
         wts = Paginator.get_page(paginator.num_pages)
     return render(request, "webtoon_list.html",
-                  {"title": "구독한 웹툰들", "webtoons": wts, "checkList": subscribe_webtoon_ids})
+                  {"title": "구독 중인 웹툰", "webtoons": wts, "checkList": subscribe_webtoon_ids})
 
 
 def subscribe(request):
@@ -87,7 +91,6 @@ def subscribe(request):
         subscribes = user.profile.subscribes
 
         webtoon_id = request.POST.get("id")
-        print(webtoon_id)
         webtoon = get_object_or_404(Webtoon, pk=webtoon_id)
 
         isSubscribed = subscribes.filter(pk=webtoon_id).exists()
@@ -106,8 +109,16 @@ def subscribe(request):
             "data": html,
             "msg": msg
         }
-        print(ctx)
     return JsonResponse(ctx)
+
+
+def rated_webtoon_list(request):
+    user = request.user
+    rated_webtoons = user.rated_webtoons_by_me.values_list("webtoon", flat=True)
+    rating_scores = user.rated_webtoons_by_me.values_list(["webtoon__pk", "score"], flat=True)
+    ctx = {
+        "webtoon_list": rated_webtoons,
+    }
 
 
 def Random(request):
@@ -118,7 +129,7 @@ def Random(request):
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList":subscribes})
+    return render(request, "webtoon_list.html", {"title": "MY PRECIOUS WEBTOON", "webtoons": webtoons, "checkList":subscribes})
 
 
 def get_random_webtoon(number_of_webtoons=1):
@@ -135,5 +146,3 @@ def get_random_webtoon(number_of_webtoons=1):
         webtoon_list.add(webtoon)
 
     return webtoon_list
-  
-  

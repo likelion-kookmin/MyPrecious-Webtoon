@@ -5,5 +5,33 @@
 {% endblock %}
 
 {% block contents %}
-Hello
+
+
+{% block body %}
+
+<body style="background-color:hsl(217, 71%, 53%);height:900px;">
+    <div>
+        <br><br>
+        {% include "messages.html" %}
+        <div style="margin-left:0px; margin-top:150px;">
+            <div style="text-align: center;">
+                <h1 class="display-2" style=" color:beige"><b>WELCOME !<br> MY PRECIOUS WEBTOON</b></h1><br><br><br>
+                <span class="button is-link is-inverted is-outlined" style=" text-align: center;width:200px; height:100px;font-size: x-large;">
+                    <a style=" all:unset;"
+                        href="{% url 'contentsApp:random' %}">웹툰취향셔플</a></span>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        {% endblock %}</div>
+</body>
 {% endblock %}
+<style type="text/css">
+    a.no-uline {
+        text-decoration: none;
+    }
+
+    a.noul:hover {
+        text-decoration: none;
+    }
+</style>

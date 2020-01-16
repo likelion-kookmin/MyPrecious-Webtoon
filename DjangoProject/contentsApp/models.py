@@ -1,9 +1,5 @@
+import django
 from django.db import models
-
-
-
-
-# Create your models here.
 class Webtoon(models.Model):
     image = models.URLField(null=True, blank=True, max_length=200)
     name = models.CharField(max_length=200)
@@ -25,8 +21,7 @@ class Webtoon(models.Model):
             if not i.isFree:
                 is_free = False
                 break
-        return is_free
-
+        return is_free    
 
 class Cartoonist(models.Model):
     image = models.URLField(null=True, max_length=200)
@@ -72,16 +67,6 @@ class Episode(models.Model):
     def __str__(self):
         return f"{self.webtoon.name} {[self.number]} \"{self.title}\" ({self.created})"
 
-# class Rating(models.Model):
-#     user = models.ForeignKey('', on_delete=models.CASCADE)
-#     webtoon = models.ForeignKey('Webtoon', on_delete=models.CASCADE)
-#     star = models.IntegerField(default=5)
-#     when = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return f"{self.user}님이 {self.webtoon.name}에 별점 {self.star}을 {self.when}에 주었습니다."
-
-
 # class Subscribe(models.Model):
 #     user = models.ForeignKey('', on_delete=models.CASCADE)
 #     webtoon = models.ForeignKey('Webtoon', on_delete=models.CASCADE)
@@ -91,9 +76,10 @@ class Episode(models.Model):
 #         return f"{self.user}님이 {self.webtoon.name}을 {self.since}부터 구독중입니다."
 
 # class Comment(models.Model):
-#     user = models.ForeignKey('', on_delete=models.CASCADE)
-#     webtoon = models.ForeignKey('Webtoon', on_delete=models.CASCADE)
-#     when = models.DateTimeField(auto_now=True)
-#     comment = models.TextField()
+#     author = models.ForeignKey('Profile.User', on_delete=models.CASCADE)
+#     post = models.ForeignKey('Post', related_name='comments', on_delete = models.CASCADE)
+#     text = models.TextField()
+#     # created_date = models.DateTimeField(default=timezone.now)
 
-# class CommnetLike
+#     def __str__(self):
+#         return self.text

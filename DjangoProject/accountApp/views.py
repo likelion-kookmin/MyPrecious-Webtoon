@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
 from django.template.loader import render_to_string
 
+from contentsApp.models import Webtoon
+
 User = get_user_model()
 
 
@@ -91,3 +93,29 @@ def deleteUsers(request):
             user.delete()
 
     return redirect('home')
+
+
+def rate_webtoon(request):
+    message = ("unrate", "rate",)
+
+    ctx = dict()
+    if request.method == "POST":
+        user = request.user
+        rated_webtoons = user.rated_webtoons_by_me
+
+        webtoon_id = request.POST.get("id")
+        webtoon = get_object_or_404(Webtoon, pk=webtoon_id)
+
+        isRated = user.rate_webtoon(webtoon_id)
+
+        # 평가 되어있었다면 취소, 안되어 있었다면 평가
+        messages.info(request, message[isRated])
+        ctx.update({"webtoon": webtoon, "isRated": isRated})
+        html = render_to_string("partial/_webtoon.html", ctx)
+        msg = render_to_string("messages.html", {"messages": messages.get_messages(request)})
+        ctx = {
+            "target": f"{ctx['webtoon'].id}",
+            "data": html,
+            "msg": msg
+        }
+    return JsonResponse(ctx)
