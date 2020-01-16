@@ -18,6 +18,23 @@
             crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <style type="text/css">
+        a:link {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
@@ -82,11 +99,7 @@
 
     {% block body %}
         {% include "messages.html" %}
-
-
         <!-- <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li> -->
-
-
         {% block content %}
         {% endblock %}
         {% block content_c %}
