@@ -1,4 +1,17 @@
 {% load static %}
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+    .checked {
+        color: orange;
+
+    }
+</style>
+
 
 <div id="webtoon-{{ webtoon.id }}" name="{{ webtoon.id }}" class="column is-half">
     <hr>
@@ -22,6 +35,23 @@
                     <br>
                     <p class="subtitle is-6"><b>{% for ct in webtoon.cartoonists.all %}@{{ ct }} {% endfor %}</b></p>
                 </div>
+            </div>
+            <div>
+                평가하기
+                <form action="{% url 'contentsApp:Rate' %}" name="rate" method="POST">
+                    {% csrf_token %}
+                    <span onmouseover="starmark(this)" onclick="starmark(this)" id="1one"
+                        style="font-size:40px;cursor:pointer;" class="fa fa-star checked"></span>
+                    <span onmouseover="starmark(this)" onclick="starmark(this)" id="2one"
+                        style="font-size:40px;cursor:pointer;" class="fa fa-star "></span>
+                    <span onmouseover="starmark(this)" onclick="starmark(this)" id="3one"
+                        style="font-size:40px;cursor:pointer;" class="fa fa-star "></span>
+                    <span onmouseover="starmark(this)" onclick="starmark(this)" id="4one"
+                        style="font-size:40px;cursor:pointer;" class="fa fa-star"></span>
+                    <span onmouseover="starmark(this)" onclick="starmark(this)" id="5one"
+                        style="font-size:40px;cursor:pointer;" class="fa fa-star"></span>
+                    <input type="submit">
+                </form>
             </div>
             <div class="content">
                 <table class="table is-fullwidth">
@@ -63,13 +93,45 @@
                 <span class="button is-rounded is-medium is-fullwidth">
                     <a style="all:unset" href="{{ webtoon.url }}">만화 보러가기</a>
                 </span>
+                <div class="columns field has-addons has-addons-centered">
+                    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+                    <script type="text/javascript"
+                        src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
-<style>
-    title {
-        color: hsl(217, 71%, 53%);
+
+
+
+
+
+<script>
+    var count;
+
+    function starmark(item) {
+        count = item.id[0];
+        sessionStorage.starRating = count;
+        var subid = item.id.substring(1);
+        for (var i = 0; i < 5; i++) {
+            if (i < count) {
+                document.getElementById((i + 1) + subid).style.color = "orange";
+            }
+            else {
+                document.getElementById((i + 1) + subid).style.color = "black";
+            }
+
+
+        }
+
     }
-</style>
+
+    function result() {
+        //Rating : Count
+        //Review : Comment(id)
+        alert("Rating : " + count + "\nReview : " + document.getElementById("comment").value);
+    }
+
+</script>

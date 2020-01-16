@@ -76,12 +76,47 @@
         }).catch(err => console.error(err));
     }
 
+<<<<<<< HEAD
     // 데이터를 가져와서 target을 렌더링한 HTML 데이터로 치환
     function render(target, data, messages) {
         target_dom = document.querySelector(`#webtoon-${target}`);
         target_dom.outerHTML = data;
         target_button = document.querySelector(`.subscribe-button-${target}`);
         target_button.addEventListener('click', subscribe);
+=======
+        function rates(event) {
+            event.preventDefault();
+            url = rate_url;
+            console.log(event.target)
+            id = event.target.id.toString();
+            formData = new URLSearchParams();
+            formData.set("id", id);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie("csrftoken"),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            }).then((res) => {
+                res.json()
+                    .then((json) => {
+                            console.log(json);
+                            render(json["target"], json["data"], json["msg"]);
+                        }
+                    )
+            }).catch(err => console.error(err));
+        }
+
+        // 데이터를 가져와서 target을 렌더링한 HTML 데이터로 치환
+        function render(target, data, messages) {
+            target_dom = document.querySelector(`#webtoon-${target}`);
+            target_dom.outerHTML = data;
+            target_button = document.querySelector(`.subscribe-button-${target}`);
+            target_button.addEventListener('click', subscribe);
+>>>>>>> 39b6c9cd0ec777bf80f83d6ffff18d644c9e89eb
 
         message_dom = document.querySelector(`#messages`);
         message_dom.outerHTML = messages;
