@@ -24,8 +24,8 @@ class MySignupForm(SignupForm):
         self.fields['email'].widget = forms.TextInput(attrs={
             'type':'email', 'class': 'input is-info', 'style':'width:1000px;margin-bottom:10px;'
         })
-        self.fields['password1'].widget = forms.PasswordInput(attrs={'type':'password1', 'class': 'input is-info', 'style':'width:1000px;margin-bottom:10px;'})
-        self.fields['password2'].widget = forms.PasswordInput(attrs={'type':'password2', 'class': 'input is-info', 'style':'width:1000px;margin-bottom:10px;'})
+        self.fields['password1'].widget = forms.PasswordInput(attrs={'type':'password', 'class': 'input is-info', 'style':'width:1000px;margin-bottom:10px;'})
+        self.fields['password2'].widget = forms.PasswordInput(attrs={'type':'password', 'class': 'input is-info', 'style':'width:1000px;margin-bottom:10px;'})
         self.fields['email'].label = "e-mail"
         self.fields['password1'].label = "password"
         self.fields['password2'].label = "confirm password"
