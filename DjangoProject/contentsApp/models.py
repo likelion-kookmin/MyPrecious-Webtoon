@@ -86,6 +86,7 @@ class Episode(models.Model):
     def __str__(self):
         return f"{self.webtoon.name} {[self.number]} \"{self.title}\" ({self.created})"
 
+
 class Review(models.Model):
     RATING_CHOICES = (
         (1, '1'),

@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from random import *
 import random
 
-from .models import Webtoon, Comment
+from .models import Webtoon, Comment, Review
 from .forms import CommentForm
 from accountApp.models import Profile
 
@@ -21,17 +21,19 @@ WEBTOON_PER_PAGE = 6
 def webtoon_detail(request, id):
     webtoon = get_object_or_404(Webtoon, pk=id)
     webtoon_tag = webtoon.tags.all()
+    similar_webtoons = set()
+
     if len(webtoon_tag) > 0:
-        ran = random.randint(0,len(webtoon_tag)-1)
+        ran = random.randint(0, len(webtoon_tag) - 1)
         webtoons = Webtoon.objects.all().order_by("id")
-        similar_webtoons = set()
         for tag in webtoon_tag:
             by_tag = list(webtoons.filter(tags__tag_name=tag))
             shuffle(by_tag)
             similar_webtoons.add(by_tag[0])
     comment_form = CommentForm()
     comments = webtoon.comments.all()
-    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form, "similar_webtoons":similar_webtoons})
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments": comments, "form": comment_form,
+                                                   "similar_webtoons": similar_webtoons})
 
 
 def comment_create(request, id):
@@ -40,7 +42,7 @@ def comment_create(request, id):
         comment_form.instance.user_id = request.user.id
         comment_form.instance.webtoon_id = id
         if comment_form.is_valid():
-            comment = comment_form.save()
+            comment_form.save()
     return redirect('contentsApp:detail', id)
 
 
@@ -76,7 +78,7 @@ def Search(request):
         webtoons = make_page(by_cartoonists, page, WEBTOON_PER_PAGE)
 
     print(search_type)
-    ctx.update({"search_word": search_word, "webtoons": webtoons, "type": search_type})
+    ctx.update({"keyword": search_word, "webtoons": webtoons, "type": search_type})
     return render(request, "webtoon_search_list.html", ctx)
 
 
@@ -100,7 +102,6 @@ def subscribe(request):
     if request.method == "POST":
         user = request.user
         subscribes = user.profile.subscribes
-        subscribed_webtoon_pk_list = get_subscribed_webtoon_pk_list(user)
 
         webtoon_id = request.POST.get("id")
         webtoon = get_object_or_404(Webtoon, pk=webtoon_id)
@@ -165,22 +166,26 @@ def tag_list(request):
     return render(request, "webtoon_list.html", {"title": keyword, "webtoons": webtoons, "keyword": keyword,
                                                  "checkList": subscribed_webtoon_ids})
 
+
 def review(request, id):
     user = request.user
     score = request.GET.get("score")
     webtoon = Webtoon.objects.get(pk=id)
     review = Review.objects.create(user=user, score=score, webtoon=webtoon)
     return redirect("/")
-   
+
 
 def make_page(objects, page_number, per_page=WEBTOON_PER_PAGE):
-    paginator = Paginator(objects, per_page)
     try:
-        page = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        page = paginator.get_page(1)
-    except EmptyPage:
-        page = paginator.get_page(paginator.num_pages)
+        paginator = Paginator(objects, per_page)
+        try:
+            page = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            page = paginator.get_page(1)
+        except EmptyPage:
+            page = paginator.get_page(paginator.num_pages)
+    except ValueError:
+        page = []
     return page
 
 
