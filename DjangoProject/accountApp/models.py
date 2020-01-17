@@ -1,7 +1,6 @@
 import django
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from contentsApp.models import Webtoon
 
 
 # Create your models here.
@@ -44,6 +43,7 @@ class CustomUserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+        user.profile = Profile.objects.create(user=user)
         user.save(using=self._db)
         return user
 
@@ -53,6 +53,7 @@ class CustomUser(AbstractBaseUser):
         verbose_name='email address',
         max_length=255,
         unique=True,
+        db_index=True,
     )
 
     # 권한 관련된 부분
@@ -60,7 +61,7 @@ class CustomUser(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
 
     # 순서대로 역참조 방지, 비대칭 관계, 중계모델 설정
-    relations = models.ManyToManyField("self", related_name="+",
+    relations = models.ManyToManyField("self", related_name="+", blank=True,
                                        symmetrical=False, through="Relation")
 
     objects = CustomUserManager()
@@ -127,7 +128,7 @@ class Profile(models.Model):
     image = models.ImageField(blank=True, null=True)
     age_range = models.PositiveSmallIntegerField(blank=True, null=True, choices=AGE_RANGE)
     date_of_birth = models.DateField(blank=True, null=True)
-    subscribes = models.ManyToManyField(Webtoon, blank=True)
+    subscribes = models.ManyToManyField('contentsApp.Webtoon', blank=True)
 
     def __str__(self):
         return f'{self.nickname} ({self.user.email})'

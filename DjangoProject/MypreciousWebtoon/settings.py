@@ -43,6 +43,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
+LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
@@ -57,6 +58,11 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+ACCOUNT_FORMS = {
+    'login': 'accountApp.forms.MyLoginForm',
+    'signup': 'accountApp.forms.MySignupForm'
+}
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,8 +74,6 @@ INSTALLED_APPS = [
     'contentsApp',
     'accountApp',
     
-    'webtoonList',
-
     # allauth needs below apps.
     'django.contrib.sites',
 

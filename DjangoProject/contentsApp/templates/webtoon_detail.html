@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}
+    홈
+{% endblock %}
+{% block content %}
+    <div class="columns" style="margin-top:50px; margin-bottom:70px;margin-left:50px;">
+        <div class="column is-one-quarter" style="padding-top: 18px;">
+            <div class="card" style="width: 230px;">
+                <div class="card-content">
+                    <div class="column has-text-centered">
+                        <img src="{{ webtoon.image }}" alt="webtoon">
+                    </div>
+                    <footer class="card-footer">
+
+                        <div class="column is-paddingless" style="text-align: center;">
+                            <div class="button is-link is-rounded">
+                                <a class="" href="{{ webtoon.url }}" role="button" style="all:unset;">보러가기</a></div>
+                        </div>
+
+                    </footer>
+                </div>
+            </div>
+        </div>
+        <div class="column is-half" style="border-right:1px solid #E6E6E6;">
+            <main class="episode__main">
+                <div class="episode__header">
+                    <h1><b style="font-size: xx-large; color: #2E64FE;">{{ webtoon.name }}</b></h1>
+                    <br>
+                    <div class="episode__author">
+                        <b>글/그림</b>&nbsp;
+                        {% for i in webtoon.cartoonists.all %}
+                            <a href="{% url 'contentsApp:search' %}?keyword={{ i }}">@{{ i }}</a>
+                        {% endfor %}
+                        &nbsp;<b>연재</b>&nbsp;{{ webtoon.content_provider }}&nbsp;&nbsp;&nbsp;&nbsp;<b>연령대</b>&nbsp;{{ webtoon.age_rating }}
+                        <hr>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <b>태그</b>
+                    <div class="tags are-medium">
+                        {% for i in webtoon.tags.all %}
+                            <a class="tag is-light is-info"
+                               href="{% url 'contentsApp:tag_list' %}?keyword={{ i }}">#{{ i }}</a>
+                        {% endfor %}
+                    </div>
+
+                </div>
+                <hr>
+
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                           role="tab" aria-controls="nav-home" aria-selected="true">별점</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                           role="tab" aria-controls="nav-profile" aria-selected="false">리뷰</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <br><br><b>나의 별점</b><br><br><b>마프웹
+
+                        별점</b></div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                 aria-labelledby="nav-profile-tab">
+                                <div id="comment">
+                                    <form action="{% url 'contentsApp:comment_create' webtoon.id %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ form }}
+                                        <input type="submit" value="Comment">
+                                    </form>
+                                    {% for comment in comments %}
+                                        <div class="comment-list">
+                                            <a>{{ comment.user }}</a>
+                                            <p>{{ comment.text|linebreaks }}</p>
+                                            <a href="{% url 'contentsApp:comment_delete' comment.id %}">삭제하기</a>
+                                        </div>
+                                    {% empty %}
+                                        <div class="comment-list">
+                                            <p>작성된 댓글이 없습니다!</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div class="column is-one-quarter" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사
+            장르
+            추천</b>
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-info">
+                    <p class="title">Cartoon-name</p>
+                    <!-- 이건 태그버튼기능이요 넣어도 좋을듯  <div class="button is-link is-outlined" style="width: 8rem;height:2rem;margin-right:0.5rem;">
+                  <a href="{% url 'contentsApp:tag_list'%}?tag={{i}}">#{{ i }}</a>-->
+                    <figure class="image is-4by3">
+                        <img src="https://bulma.io/images/placeholders/640x480.png">
+                    </figure>
+                </article>
+            </div>
+        </div>
+    </div>
+{% endblock %}

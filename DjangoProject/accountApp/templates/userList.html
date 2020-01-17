@@ -7,8 +7,10 @@
 
 {% endblock %}
 
-{% block content %}
-    <h1 class="title">{{ user.profile.nickname }}({{ user.email }})님의 추천 친구 목록</h1>
+{% block content %}<br>
+<h1 class="title is-2" style="color:hsl(217, 71%, 53%);text-align: center;"><b>{{ user.profile.nickname }}({{ user.email }})님의 추천 친구 목록</b></h1>
+    <hr>
+    
     {% include "partial/_userList.html" with people=users checkList=following only %}
 {% endblock %}
 
