@@ -84,3 +84,18 @@ class Episode(models.Model):
 
     def __str__(self):
         return f"{self.webtoon.name} {[self.number]} \"{self.title}\" ({self.created})"
+
+class Review(models.Model):
+    RATING_CHOICES = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='star')
+    webtoon = models.ForeignKey(Webtoon, on_delete=models.CASCADE, related_name='star')
+    score = models.IntegerField(choices=RATING_CHOICES, default=1)
+
+    def __str__(self):
+        return (str(self.score) if self.score else "1")

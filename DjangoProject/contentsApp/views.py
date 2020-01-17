@@ -177,3 +177,10 @@ def tag_list(request):
     page = request.GET.get('page')
     return render(request, "webtoon_list.html", {"title": tag, "webtoons": by_tag,
                                             "checkList": subscribe_webtoon_ids})
+
+def review(request, id):
+    user = request.user
+    score = request.GET.get("score")
+    webtoon = Webtoon.objects.get(pk=id)
+    review = Review.objects.create(user=user, score=score, webtoon=webtoon)
+    return redirect

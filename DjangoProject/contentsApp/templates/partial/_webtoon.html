@@ -22,6 +22,21 @@
                     <p class="subtitle is-6"><b>{% for ct in webtoon.cartoonists.all %}@{{ ct }} {% endfor %}</b></p>
                 </div>
             </div>
+            <div>
+                평가하기
+                {{user_reviews}}
+                <p>{%if webtoon.id in user_reviews.webtoon.id%}
+                    {{user_reviews.socre}}
+                    {%else%}
+                    <form action="{% url 'contentsApp:review' webtoon.id %}" type="GET">
+                        1점<input type="radio" name="score" value="1">
+                        2점<input type="radio" name="score" value="2">
+                        3점<input type="radio" name="score" value="3">
+                        4점<input type="radio" name="score" value="4">
+                        5점<input type="radio" name="score" value="5">
+                        <input type="submit" value="평가하기">
+                    {%endif%}</p>
+            </div>
 
             <div class="content">
                 <table class="table is-fullwidth">
@@ -40,7 +55,7 @@
                     </tr>
                     <tr>
                         <th>줄거리</th>
-                        <td>{{ webtoon.description|safe }}</td>
+                        <td>{{ webtoon.description|truncatechars:30|safe }}</td>
                     </tr>
                     </tbody>
                 </table>
