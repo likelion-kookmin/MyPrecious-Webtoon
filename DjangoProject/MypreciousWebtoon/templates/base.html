@@ -65,34 +65,51 @@
                 </a>
                 <a class="navbar-item" href="{% url 'accounts:user_list' %}">User List</a>
             {% endif %}
-
+            {#            <form method="GET" action="{% url 'contentsApp:search' %}">#}
+            {#                <input class="input is-rounded" type="text" name="keyword" placeholder="어떤 웹툰이 보고싶으신가요?"#}
+            {#                       style="width:1000px; ">#}
+            {#                <button class="button is-rounded" type="submit">Search</button>#}
+            {#            </form>#}
         </div>
-        <div class="navbar-start" style="margin-top:8.5px;">
-            <form method="GET" action="{% url 'contentsApp:search' %}">
-                <input class="input is-rounded" type="text" name="keyword" placeholder="어떤 웹툰이 보고싶으신가요?"
-                       style="width:1000px; ">
-                <button class="button is-rounded" type="submit">Search</button>
-            </form>
-        </div>
+        <div class="navbar-end is-horizontal">
+            <div class="navbar-item inline-group">
+                <form class="is-marginless" action="{% url 'contentsApp:search' %}" method="get">
 
-    </div>
-    <div class="navbar-end">
-        <div class="navbar-item">
-            <div class="buttons">
-                {% if user.is_authenticated %}
-                    <a class="button is-link is-rounded" href="{% url 'account_logout' %}">
-                        <strong>logout</strong>
-                    </a>
+                    <div class="field is-grouped" style="width:50rem;">
+                        <div class="select is-rounded">
+                            <select name="type">
+                                <option value="name">웹툰이름</option>
+                                <option value="cartoonist">작가</option>
+                            </select>
+                        </div>
+                        &nbsp;
+                        <p class="control is-expanded">
+                            <input class="input is-rounded" type="text" placeholder="Find a repository">
+                        </p>
+                        &nbsp;
+                        <p class="control">
+                            <a class="button is-link is-rounded">
+                                Search
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if user.is_authenticated %}
+                        <a class="button is-link is-rounded" href="{% url 'account_logout' %}">
+                            <strong>logout</strong>
+                        </a>
 
-                {% else %}
-                    <div>
-                        <a class="button is-rounded" href="{% url 'account_login' %}">LogIn</a>
-                        <a class="button is-link is-rounded" href="{% url 'account_signup' %}">Sign Up</a></div>
-                {% endif %}
+                    {% else %}
+                        <div>
+                            <a class="button is-rounded" href="{% url 'account_login' %}">LogIn</a>
+                            <a class="button is-link is-rounded" href="{% url 'account_signup' %}">Sign Up</a></div>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-    </div>
 </nav>
 
 <div class="container">
@@ -102,10 +119,9 @@
         <!-- <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li> -->
         {% block content %}
         {% endblock %}
-        {% block content_c %}
-        {% endblock %}
     {% endblock %}
     {% block extra_body %}
+
     {% endblock %}
 </div>
 

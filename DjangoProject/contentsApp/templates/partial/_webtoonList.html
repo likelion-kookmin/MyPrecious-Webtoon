@@ -1,40 +1,17 @@
 <div id="webtoon-list" class="columns is-multiline">
     {% for webtoon in webtoon_list %}
         {% include "partial/_webtoon.html" %}
+    {% empty %}
+        <div class="column is-full text-center">
+            <hr>
+            <h3 class="title is-size-6 has-text-grey-light">검색 결과가 없습니다.</h3>
+        </div>
     {% endfor %}
 </div>
 
 <br><br><br>
-<div style="text-align: center; margin-bottom:30px;">
-    {% if webtoon_list %}
-        {% if webtoon_list.has_previous %}
-            <span class="button is-link">
-        <a style="all:unset" href="?page=1&keyword={{ keyword }}">맨 앞으로</a>
-    </span>
-            <span class="button is-link">
-        <a style="all:unset" href="?page={{ webtoon_list.previous_page_number }}&keyword={{ keyword }}">이전으로</a></span>
+{% include 'partial/_pagenationBar.html' with list_object=webtoon_list %}
 
-        {% endif %}
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <span>{{ webtoon_list.number }}</span>
-        <span>/</span>
-        <span>{{ webtoon_list.paginator.num_pages }}</span>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {% if webtoon_list.has_next %}
-            <span class="button is-link">
-        <a style="all:unset" href="?page={{ webtoon_list.next_page_number }}&keyword={{ keyword }}">다음으로</a>
-    </span>
-
-        {% endif %}
-        {% if webtoon_list.has_previous %}
-            <span class="button is-link">
-        <a style="all:unset" href="?page={{ webtoon_list.paginator.num_pages }}&keyword={{ keyword }}">맨
-            뒤로</a>
-    </span>
-
-        {% endif %}
-    {% endif %}
-</div>
 {% block extra_body %}
     <script type="text/javascript">
         // 장고에서 template로 넘겨주는 context를 javascript 변수에 저장
@@ -45,7 +22,7 @@
     <script>
         // 윈도우가 로드될 때 버튼에 click 이벤트를 연결해준다.
         window.onload = function () {
-            subscribe_buttons = document.querySelectorAll("span.subscribe-button");
+            subscribe_buttons = document.querySelectorAll("div.subscribe-button");
             subscribe_buttons.forEach(button => {
                 button.addEventListener('click', subscribe);
             });
