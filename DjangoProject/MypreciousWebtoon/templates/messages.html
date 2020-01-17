@@ -1,17 +1,13 @@
 <div id="messages" class="content">
-
     {% if messages %}
-    <article class="message">
-        <div class="message-body" style="text-align: center;">
-            <strong>MY PRECIOUS WEBTOON</strong>
-            <br>
+        <article class="message">
+            <div class="message-body" style="text-align: center;">
+                <strong>MY PRECIOUS WEBTOON</strong>
+                <br>
                 {% for message in messages %}
-                {{ message }}
+                    {{ message }}
                 {% endfor %}
-            
-        </div>
-    </article>
-
+            </div>
+        </article>
     {% endif %}
-
 </div>
