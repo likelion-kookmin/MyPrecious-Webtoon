@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.views.generic.edit import CreateView
 
+from random import *
 import random
 
 from contentsApp.models import *
@@ -18,9 +19,18 @@ from .form import CommentForm
 
 def webtoon_detail(request, id):
     webtoon = get_object_or_404(Webtoon, pk=id)
+    webtoon_tag = webtoon.tags.all()
+    if len(webtoon_tag) > 0:
+        ran = random.randint(0,len(webtoon_tag)-1)
+        webtoons = Webtoon.objects.all().order_by("id")
+        similar_webtoons = set()
+        for tag in webtoon_tag:
+            by_tag = list(webtoons.filter(tags__tag_name=tag))
+            shuffle(by_tag)
+            similar_webtoons.add(by_tag[0])
     comment_form = CommentForm()
     comments = webtoon.comments.all()
-    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form})
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form, "similar_webtoons":similar_webtoons})
 
 def comment_create(request, id):
     if request.method == "POST":
