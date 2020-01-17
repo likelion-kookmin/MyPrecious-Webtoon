@@ -5,7 +5,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
+from random import *
 import random
 
 from .models import Webtoon, Comment
@@ -18,9 +20,18 @@ WEBTOON_PER_PAGE = 6
 
 def webtoon_detail(request, id):
     webtoon = get_object_or_404(Webtoon, pk=id)
+    webtoon_tag = webtoon.tags.all()
+    if len(webtoon_tag) > 0:
+        ran = random.randint(0,len(webtoon_tag)-1)
+        webtoons = Webtoon.objects.all().order_by("id")
+        similar_webtoons = set()
+        for tag in webtoon_tag:
+            by_tag = list(webtoons.filter(tags__tag_name=tag))
+            shuffle(by_tag)
+            similar_webtoons.add(by_tag[0])
     comment_form = CommentForm()
     comments = webtoon.comments.all()
-    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments": comments, "form": comment_form})
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form, "similar_webtoons":similar_webtoons})
 
 
 def comment_create(request, id):
@@ -41,52 +52,43 @@ def comment_delete(request, id):
 
 
 @csrf_exempt
+@login_required
 def Search(request):
+    ctx = dict()
+
+    page = request.GET.get('page')
     search_word = request.GET.get("keyword")
+    search_type = request.GET.get('type')
+
     wts_search = Webtoon.objects.all().order_by("id")
 
-    by_name = wts_search.filter(name__icontains=search_word).order_by("id")
-    by_cartoonists = wts_search.filter(cartoonists__name=search_word).order_by("id")
+    subscribed_webtoon_pk_list = get_subscribed_webtoon_pk_list(request.user)
+    ctx.update({"checkList": subscribed_webtoon_pk_list})
 
-    profile = Profile.objects.get(user__id=request.user.id)
-    subscribe_webtoons = profile.subscribes.all().order_by("id")
-    subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
+    print(search_type)
+    if search_type != "cartoonist":
+        search_type = "name"
+        by_name = wts_search.filter(name__icontains=search_word).order_by("id")
+        webtoons = make_page(by_name, page, WEBTOON_PER_PAGE)
+    else:
+        search_type = "cartoonist"
+        by_cartoonists = wts_search.filter(cartoonists__name=search_word).order_by("id")
+        webtoons = make_page(by_cartoonists, page, WEBTOON_PER_PAGE)
 
-    paginator = Paginator(by_name, WEBTOON_PER_PAGE)
-    page = request.GET.get('page')
-    try:
-        wts_search_by_name = paginator.get_page(page)
-    except PageNotAnInteger:
-        wts_search_by_name = paginator.get_page(1)
-    except EmptyPage:
-        wts_search_by_name = Paginator.get_page(paginator.num_pages)
-
-    paginator1 = Paginator(by_cartoonists, WEBTOON_PER_PAGE)
-    page = request.GET.get('page')
-    try:
-        wts_search_by_cartoonists = paginator1.get_page(page)
-    except PageNotAnInteger:
-        wts_search_by_cartoonists = paginator1.get_page(1)
-    except EmptyPage:
-        wts_search_by_cartoonists = Paginator1.get_page(paginator1.num_pages)
-    return render(request, "search_list.html", {"search_word": search_word, "wts_search_by_name": wts_search_by_name,
-                                                "wts_search_by_cartoonists": wts_search_by_cartoonists,
-                                                "checkList": subscribe_webtoon_ids})
+    print(search_type)
+    ctx.update({"search_word": search_word, "webtoons": webtoons, "type": search_type})
+    return render(request, "webtoon_search_list.html", ctx)
 
 
+@login_required
 def subscribe_list(request):
     profile = Profile.objects.get(user__id=request.user.id)
     subscribe_webtoons = profile.subscribes.all().order_by("id")
     subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
 
-    paginator = Paginator(subscribe_webtoons, WEBTOON_PER_PAGE)
     page = request.GET.get('page')
-    try:
-        wts = paginator.get_page(page)
-    except PageNotAnInteger:
-        wts = paginator.get_page(1)
-    except EmptyPage:
-        wts = Paginator.get_page(paginator.num_pages)
+    wts = make_page(subscribe_webtoons, page, WEBTOON_PER_PAGE)
+
     return render(request, "webtoon_list.html",
                   {"title": "구독한 웹툰들", "webtoons": wts, "checkList": subscribe_webtoon_ids})
 
@@ -98,6 +100,7 @@ def subscribe(request):
     if request.method == "POST":
         user = request.user
         subscribes = user.profile.subscribes
+        subscribed_webtoon_pk_list = get_subscribed_webtoon_pk_list(user)
 
         webtoon_id = request.POST.get("id")
         webtoon = get_object_or_404(Webtoon, pk=webtoon_id)
@@ -110,6 +113,7 @@ def subscribe(request):
 
         # 구독이 되어있었다면 취소, 안되어 있었다면 구독
         messages.info(request, message[not isSubscribed])
+
         ctx.update({"webtoon": webtoon, "isSubscribed": not isSubscribed})
         html = render_to_string("partial/_webtoon.html", ctx)
         msg = render_to_string("messages.html", {"messages": messages.get_messages(request)})
@@ -121,23 +125,15 @@ def subscribe(request):
     return JsonResponse(ctx)
 
 
-def rated_webtoon_list(request):
-    user = request.user
-    rated_webtoons = user.rated_webtoons_by_me.values_list("webtoon", flat=True)
-    rating_scores = user.rated_webtoons_by_me.values_list(["webtoon__pk", "score"], flat=True)
-    ctx = {
-        "webtoon_list": rated_webtoons,
-    }
-
-
 def Random(request):
     webtoons = get_random_webtoon(WEBTOON_PER_PAGE)
-    subscribes = request.user.profile.subscribes.values_list("id", flat=True)
+    subscribed_webtoon_list = get_subscribed_webtoon_pk_list(request.user)
 
     # 시간 테스트
     # import timeit
     # print(timeit.timeit(get_random_webtoon, number=100))
-    return render(request, "webtoon_list.html", {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList": subscribes})
+    return render(request, "webtoon_list.html",
+                  {"title": "랜덤 웹툰들", "webtoons": webtoons, "checkList": subscribed_webtoon_list})
 
 
 def get_random_webtoon(number_of_webtoons=1):
@@ -157,15 +153,42 @@ def get_random_webtoon(number_of_webtoons=1):
 
 
 def tag_list(request):
-    tag = request.GET.get("tag")
-    webtoons = Webtoon.objects.all().order_by("id")
-    by_tag = webtoons.filter(tags__tag_name=tag)
+    keyword = request.GET.get("keyword")
+    by_tag = Webtoon.objects.all().order_by("id") \
+        .filter(tags__tag_name=keyword)
 
-    profile = Profile.objects.get(user__id=request.user.id)
-    subscribe_webtoons = profile.subscribes.all().order_by("id")
-    subscribe_webtoon_ids = subscribe_webtoons.values_list("id", flat=True)
+    subscribed_webtoon_ids = get_subscribed_webtoon_pk_list(request.user)
 
-    paginator = Paginator(by_tag, 5)
     page = request.GET.get('page')
-    return render(request, "webtoon_list.html", {"title": tag, "webtoons": by_tag,
-                                                 "checkList": subscribe_webtoon_ids})
+    webtoons = make_page(by_tag, page, WEBTOON_PER_PAGE)
+
+    return render(request, "webtoon_list.html", {"title": keyword, "webtoons": webtoons, "keyword": keyword,
+                                                 "checkList": subscribed_webtoon_ids})
+
+def review(request, id):
+    user = request.user
+    score = request.GET.get("score")
+    webtoon = Webtoon.objects.get(pk=id)
+    review = Review.objects.create(user=user, score=score, webtoon=webtoon)
+    return redirect("/")
+   
+
+def make_page(objects, page_number, per_page=WEBTOON_PER_PAGE):
+    paginator = Paginator(objects, per_page)
+    try:
+        page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page = paginator.get_page(1)
+    except EmptyPage:
+        page = paginator.get_page(paginator.num_pages)
+    return page
+
+
+def get_subscribed_webtoon_pk_list(user):
+    try:
+        profile = get_object_or_404(Profile, user=user)
+        subscribe_webtoons = profile.subscribes
+        subscribe_webtoon_ids = subscribe_webtoons.values_list("pk", flat=True)
+        return subscribe_webtoon_ids
+    except AttributeError:
+        return []

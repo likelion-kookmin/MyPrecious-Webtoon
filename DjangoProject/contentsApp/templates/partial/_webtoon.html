@@ -14,19 +14,34 @@
                     </figure>
                 </div>
                 <div class="media-content">
-                    <span>
-                        <p class="title is-4" style="color:hsl(217, 71%, 53%);">
-                            <a style="all:unset" href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a></p>
-                    </span>
-                    <br>
+                    <div class="title is-4" style="color:hsl(217, 71%, 53%);">
+                        <a style="all:unset" href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a>
+                    </div>
                     <div class="subtitle is-6">
-                        {% for ct in webtoon.cartoonists.all %}
-                            <p class="tag is-medium">
-                                <a href="{% url 'contentsApp:search' %}?keyword={{ ct }}">{{ ct }}</a>
-                            </p>
-                        {% endfor %}
+                        <div class="tags">
+                            {% for ct in webtoon.cartoonists.all %}
+                                <div class="tag is-light is-info">
+                                    <a href="{% url 'contentsApp:search' %}?keyword={{ ct }}">@{{ ct }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                평가하기
+                {{user_reviews}}
+                <p>{%if webtoon.id in user_reviews.webtoon.id%}
+                    {{user_reviews.socre}}
+                    {%else%}
+                    <form action="{% url 'contentsApp:review' webtoon.id %}" type="GET">
+                        1점<input type="radio" name="score" value="1">
+                        2점<input type="radio" name="score" value="2">
+                        3점<input type="radio" name="score" value="3">
+                        4점<input type="radio" name="score" value="4">
+                        5점<input type="radio" name="score" value="5">
+                        <input type="submit" value="평가하기">
+                    {%endif%}</p>
             </div>
 
             <div class="content">
@@ -39,9 +54,13 @@
                     <tr>
                         <th>장르</th>
                         <td>
-                            {% for tag in webtoon.tags.all %}
-                                <a href="{% url 'contentsApp:search' %}?keyword={{ tag }}">{{ tag }}</a>
-                            {% endfor %}
+                            <div classs="tags">
+                                {% for tag in webtoon.tags.all %}
+                                    <div class="tag is-info is-light">
+                                        <a href="{% url 'contentsApp:tag_list' %}?keyword={{ tag }}">#{{ tag }}</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -50,7 +69,7 @@
                     </tr>
                     <tr>
                         <th>줄거리</th>
-                        <td>{{ webtoon.description|safe }}</td>
+                        <td>{{ webtoon.description|truncatechars:30|safe }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -58,22 +77,20 @@
         </div>
         <div class="columns field has-addons has-addons-centered">
             <div class="column is-two-fifths">
-                <span id="{{ webtoon.id }}" class="subscribe-button subscribe-button-{{ webtoon.id }}
+                <div id="{{ webtoon.id }}" class="subscribe-button subscribe-button-{{ webtoon.id }}
                     button is-link is-rounded is-medium is-fullwidth">
                     {% if webtoon.id in checkList or isSubscribed %}
                         구독취소하기
                     {% else %}
                         구독하기
                     {% endif %}
-                </span>
+                </div>
             </div>
 
             <div class="column is-two-fifths">
-
-                <span class="button is-rounded is-medium is-fullwidth">
+                <div class="button is-rounded is-medium is-fullwidth">
                     <a style="all:unset" href="{{ webtoon.url }}">만화 보러가기</a>
-                </span>
-
+                </div>
             </div>
 
         </div>

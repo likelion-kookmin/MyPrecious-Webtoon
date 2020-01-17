@@ -1,0 +1,33 @@
+{% extends 'webtoon_list.html' %}
+
+{% block title %}
+    {{ search_word }} 검색결과
+{% endblock %}
+
+{% block content %}
+    <h1 class="title"><b>"{{ search_word }}"으로 검색된 웹툰들</b></h1>
+    <div class="tabs is-medium is-boxed is-centered is-fullwidth">
+        <ul>
+            {% if type != "cartoonist" %}
+                <li class="is-active"><a href="{% url 'contentsApp:search' %}?type=name&keyword={{ search_word }}">웹툰 이름</a></li>
+                <li><a href="{% url 'contentsApp:search' %}?type=cartoonist&keyword={{ search_word }}">작가</a></li>
+            {% else %}
+                <li><a href="{% url 'contentsApp:search' %}?type=name&keyword={{ search_word }}">웹툰 이름</a></li>
+                <li class="is-active"><a href="{% url 'contentsApp:search' %}?type=cartoonist&keyword={{ search_word }}">작가</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% include "partial/_webtoonList.html" with webtoon_list=webtoons keyword=search_word %}
+{% endblock %}
+
+{% block extra_body %}
+
+{% endblock %}
+{##}
+{#    <div style="margin-bottom:100px;">#}
+{#        <br><br>#}
+{#        <h1 class="title" style="color:hsl(217, 71%, 53%);"><b>"{{ search_word }}"으로 검색된 작가들</b></h1>#}
+{#        <hr>#}
+{#        {% include "partial/_webtoonList_c.html" with webtoon_list=wts_search_by_cartoonists keyword=search_word %}#}
+{#    </div>#}
+>
