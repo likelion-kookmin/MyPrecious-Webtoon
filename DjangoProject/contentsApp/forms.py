@@ -1,5 +1,6 @@
-from .models import Webtoon, Comment
 from django import forms
+from .models import *
+
 
 class CommentForm(forms.ModelForm):
     # text = forms.TextInput(label="댓글")

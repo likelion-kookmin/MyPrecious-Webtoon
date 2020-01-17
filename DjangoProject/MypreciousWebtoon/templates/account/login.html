@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+
+
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+
+
+<div class="socialaccount_ballot" style="color:cornsilk;">
+
+  <ul class="socialaccount_providers">
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}또는
+  </ul>
+
+
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% else %}
+<p>{% blocktrans %}If you have not created an account yet, then please
+  <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+{% endif %}
+<div class="container" style="margin-top:0px;margin-bottom:200px;" >
+  <div class="card row-md-4" >
+      <div class="cardsignup">
+          <div class="row no-gutters" style=>
+            <div class="col-md-6" style="background-color: #E0AD6B;">
+              <div style="text-align:center;margin-top:250px;">
+                <h1 class="title is-3" style="color:white;"><b>MY PRECIOUS</b></h1>
+                <h1 class="title is-1" style="color:white;"><b>WEBTOON</b></h1>
+              </div> 
+            </div>
+              <div class="col-md-6" >
+                  <div class="card-body" style="background-color: hsl(217, 71%, 53%);">
+                      <div class="container" style="margin-top:10px;">
+                        <div style="text-align:left;margin-top:23px;">
+                        
+                          <h1 class="title is-1" style="color:white;"><b>LOG IN</b><br><br><br><br></h1>
+                        </div> 
+                          <br><br><br>
+                          <form class="login" method="POST" action="{% url 'account_login' %}">
+                            <div class="container title is-5" style="text-align: left;color:white;font-size: large;">
+                              {% csrf_token %}
+                              {{ form.as_p }}
+                              {% if redirect_field_value %}
+                              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                              {% endif %}
+                              <br><br>
+                              <span class="button is-link is-rounded is-inverted is-outlined">
+                              <a style="all:unset;"
+                                href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a></span>
+                              <button class="button is-link is-rounded is-inverted is-outlined" type="submit">{% trans "Sign In" %}</button></div>
+                          </form>
+                
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<style>
+  div {
+      text-align: center;
+  }
+  .cardsignup{
+      height:600px;
+      
+      
+  }
+
+</style>
+
+
+{% endblock %}

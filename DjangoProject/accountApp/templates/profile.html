@@ -15,18 +15,20 @@
 <hr>
 <div class="columns">
     <div class="column is-half" style="border-right:1px solid #E6E6E6;">
-        <div style="text-align: center;">
+        <div>
+            <div style="text-align: center;">
 
-            <div>
-                {% include "partial/_user.html" with person=user %}</div>
+                <div>
+                    {% include "partial/_user.html" with person=user %}</div>
+            </div>
         </div>
     </div>
     <div class="column">
-        <div class="tabs"style="margin-left:50px;">
-            <ul >
+        <div class="tabs" style="margin-left:50px;">
+            <ul>
                 <li class="is-active"><a>Followers</a></li>
                 <li><a>Following</a></li>
-            </ul >
+            </ul>
         </div>
         {% include "partial/_userList.html" %}
     </div>

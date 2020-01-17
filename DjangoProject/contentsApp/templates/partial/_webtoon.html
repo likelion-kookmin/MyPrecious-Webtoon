@@ -14,12 +14,18 @@
                     </figure>
                 </div>
                 <div class="media-content">
-                    <span>
-                        <p class="title is-4" style="color:hsl(217, 71%, 53%);"><a style="all:unset"
-                                                                                   href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a></p>
-                    </span>
-                    <br>
-                    <p class="subtitle is-6"><b>{% for ct in webtoon.cartoonists.all %}@{{ ct }} {% endfor %}</b></p>
+                    <div class="title is-4" style="color:hsl(217, 71%, 53%);">
+                        <a style="all:unset" href="{% url 'contentsApp:detail' webtoon.id %}">{{ webtoon.name }}</a>
+                    </div>
+                    <div class="subtitle is-6">
+                        <div class="tags">
+                            {% for ct in webtoon.cartoonists.all %}
+                                <div class="tag is-light is-info">
+                                    <a href="{% url 'contentsApp:search' %}?keyword={{ ct }}">@{{ ct }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div>
@@ -47,7 +53,15 @@
                     </tr>
                     <tr>
                         <th>장르</th>
-                        <td>{% for tag in webtoon.tags.all %}{{ tag }} {% endfor %}</td>
+                        <td>
+                            <div classs="tags">
+                                {% for tag in webtoon.tags.all %}
+                                    <div class="tag is-info is-light">
+                                        <a href="{% url 'contentsApp:tag_list' %}?keyword={{ tag }}">#{{ tag }}</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <th>연령</th>
@@ -63,22 +77,20 @@
         </div>
         <div class="columns field has-addons has-addons-centered">
             <div class="column is-two-fifths">
-                <span id="{{ webtoon.id }}" class="subscribe-button subscribe-button-{{ webtoon.id }}
+                <div id="{{ webtoon.id }}" class="subscribe-button subscribe-button-{{ webtoon.id }}
                     button is-link is-rounded is-medium is-fullwidth">
                     {% if webtoon.id in checkList or isSubscribed %}
                         구독취소하기
                     {% else %}
                         구독하기
                     {% endif %}
-                </span>
+                </div>
             </div>
 
             <div class="column is-two-fifths">
-
-                <span class="button is-rounded is-medium is-fullwidth">
+                <div class="button is-rounded is-medium is-fullwidth">
                     <a style="all:unset" href="{{ webtoon.url }}">만화 보러가기</a>
-                </span>
-
+                </div>
             </div>
 
         </div>

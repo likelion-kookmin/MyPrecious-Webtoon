@@ -7,7 +7,7 @@ app_name = "accounts"
 urlpatterns = [
     # accounts/로 이동
     # path('signup/', views.signupView, name='signup'),
-    # path('login/', views.loginView, name='login'),
+   
     path('', views.userListView, name='user_list'),
     path('logout/', views.logoutView, name='logout'),
     path('reset/', views.deleteUsers, name="reset"),
