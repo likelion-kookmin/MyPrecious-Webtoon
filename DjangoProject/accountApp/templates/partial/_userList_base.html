@@ -1,0 +1,58 @@
+{# 유저 정보 하나를 담는 카드 템플릿 #}
+{#number|default:"1"#}
+<div class="container" style="text-align: center;">
+    <div id="user-{{ person.id }}" name="{{ person.id }}" class="column is-one-third">
+        {% with person.profile as profile %}
+
+        <div class="card is-shadowless" style="text-align:center;border-color: transparent;">
+            <div class="card-content" style="text-align: center;">
+                <div class="">
+                    <div class="media" style="">
+                        <div class="align">
+                            <div class="content" style="text-align: center;">
+                                <figure class="image is-128x128">
+                                    {% if profile.image %}
+                                    <img class="is-rounded" src="{{ profile.image.url }}" alt="Profile image">
+                                    {% else %}
+                                    <img class="is-rounded" src="https://bulma.io/images/placeholders/96x96.png"
+                                        alt="Profile image" style="text-align: center;">
+                                    {% endif %}
+                                </figure>
+                                <div class="content">
+                                    {% if person.id != request.user.id %}
+                                    <button id="btn-{{ person.id }}" name="{{ person.id }}" class="button is-link">
+                                        {% if person.id in checkList or isFollowing %}
+                                        following
+                                        {% else %}
+                                        follow
+                                        {% endif %}
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                <p class="title is-4">
+                                    {% if profile.nickname %}
+                                    {{ profile.nickname }}
+                                    {% else %}
+                                    No Nickname
+                                    {% endif %}
+                                </p>
+                                <p class="subtitle is-6">{{ person.email }}</p>
+                                <span><strong>id : </strong>{{ person.id }}</span><br>
+                                <span><strong>연령대 : </strong>{{ profile.age_range }}</span>
+                            </div>
+                        </div>
+                        <div class="media-content">
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+    </div>
+</div>
+<style>
+
+</style>
