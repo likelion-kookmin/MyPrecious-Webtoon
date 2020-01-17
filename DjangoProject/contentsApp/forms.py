@@ -10,4 +10,7 @@ class CommentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['text'].label = "댓글"
+        self.fields['text'].widget = forms.TextInput(attrs={
+            'type':'textarea', 'class': 'textarea is-info', 'style':'height:50px;'
+        })
+        self.fields['text'].label = ""
