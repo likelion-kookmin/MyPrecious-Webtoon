@@ -82,9 +82,13 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </main>
-        </div>
-        <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
+                </main>
+            </div>
+            <div class="column" style="color:#2E64FE;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;유사 장르 추천</b></div>
+        
+            {% for cartoon in similar_webtoons %}
+            {{cartoon.image}}
+            {{cartoon.name}}
+            {%endfor%}
     </div>
 {% endblock %}

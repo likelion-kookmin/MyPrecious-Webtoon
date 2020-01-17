@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 
+from random import *
 import random
 
 from .models import Webtoon, Comment
@@ -19,9 +20,18 @@ WEBTOON_PER_PAGE = 6
 
 def webtoon_detail(request, id):
     webtoon = get_object_or_404(Webtoon, pk=id)
+    webtoon_tag = webtoon.tags.all()
+    if len(webtoon_tag) > 0:
+        ran = random.randint(0,len(webtoon_tag)-1)
+        webtoons = Webtoon.objects.all().order_by("id")
+        similar_webtoons = set()
+        for tag in webtoon_tag:
+            by_tag = list(webtoons.filter(tags__tag_name=tag))
+            shuffle(by_tag)
+            similar_webtoons.add(by_tag[0])
     comment_form = CommentForm()
     comments = webtoon.comments.all()
-    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments": comments, "form": comment_form})
+    return render(request, 'webtoon_detail.html', {'webtoon': webtoon, "comments":comments, "form":comment_form, "similar_webtoons":similar_webtoons})
 
 
 def comment_create(request, id):
@@ -155,6 +165,13 @@ def tag_list(request):
     return render(request, "webtoon_list.html", {"title": keyword, "webtoons": webtoons, "keyword": keyword,
                                                  "checkList": subscribed_webtoon_ids})
 
+def review(request, id):
+    user = request.user
+    score = request.GET.get("score")
+    webtoon = Webtoon.objects.get(pk=id)
+    review = Review.objects.create(user=user, score=score, webtoon=webtoon)
+    return redirect("/")
+   
 
 def make_page(objects, page_number, per_page=WEBTOON_PER_PAGE):
     paginator = Paginator(objects, per_page)
