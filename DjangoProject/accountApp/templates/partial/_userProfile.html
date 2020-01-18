@@ -1,0 +1,50 @@
+{# 유저 정보 하나를 담는 카드 템플릿 #}
+{#number|default:"1"#}
+<div id="user-{{ person.id }}" name="{{ person.id }}" class="column ">
+    {% with person.profile as profile %}
+    <div>
+        <div class="card " style="">
+            <div class="card-content " style="background-color: hsl(217, 71%, 53%);height:500px;">
+                <div class="media" style="margin-top:150px;margin-left:110px;">
+                    <div class="media-left">
+                        <figure class="image is-128x128">
+                            {% if profile.image %}
+                            <img class="is-rounded" src="{{ profile.image.url }}" alt="Profile image">
+                            {% else %}
+                            <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png"
+                                alt="Profile image">
+                            {% endif %}
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4" style="color:cornsilk;">
+                            {% if profile.nickname %}
+                            {{ profile.nickname }}
+                            {% else %}
+                            No Nickname
+                            {% endif %}
+                        </p>
+                        <p class="subtitle is-6" style="color:cornsilk;">{{ person.email }}</p>
+                        <span style="color:cornsilk;"><strong style="color:cornsilk;">id :
+                                </strongstyle="color:cornsilk;">{{ person.id }}</span><br>
+                        <span style="color:cornsilk;"><strong style="color:cornsilk;">age :
+                            </strong>{{ profile.age_range }}</span>
+                    </div>
+                </div>
+
+                <div class="content">
+                    {% if person.id != request.user.id %}
+                    <button id="btn-{{ person.id }}" name="{{ person.id }}" class="button is-primary">
+                        {% if person.id in checkList or isFollowing %}
+                        following
+                        {% else %}
+                        follow
+                        {% endif %}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+    </div>
+</div>

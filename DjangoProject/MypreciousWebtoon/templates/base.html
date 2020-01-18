@@ -1,55 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <style type="text/css">
+        a:link {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
 </head>
+
 <body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <b>마프웹</b>
+        </a>
+
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+           data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            {% if user.is_authenticated %}
+                <a class="navbar-item" href="{% url 'accounts:profile' %}">
+                    Profile
+                </a>
+                <a class="navbar-item" href="{% url 'contentsApp:subscribe_list' %}">Subscribes
+                </a>
+                <a class="navbar-item" href="{% url 'accounts:user_list' %}">User List</a>
+            {% endif %}
+        </div>
+        <div class="navbar-end is-horizontal">
+            <div class="navbar-item inline-group">
+                <form class="is-marginless" action="{% url 'contentsApp:search' %}" method="get">
+
+                    <div class="field is-grouped" style="width:50rem;">
+                        <div class="select is-rounded">
+                            <select name="type">
+                                <option value="name">웹툰이름</option>
+                                <option value="cartoonist">작가</option>
+                            </select>
+                        </div>
+                        &nbsp;
+                        <p class="control is-expanded">
+                            <input name="keyword" class="input is-rounded" type="text" placeholder="Find a repository">
+                        </p>
+                        &nbsp;
+                        <p class="control">
+                            <button type="submit" class="button is-link is-rounded">
+                                Search
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if user.is_authenticated %}
+                        <a class="button is-link is-rounded" href="{% url 'account_logout' %}">
+                            <strong>logout</strong>
+                        </a>
+
+                    {% else %}
+                        <div>
+                            <a class="button is-rounded" href="{% url 'account_login' %}">LogIn</a>
+                            <a class="button is-link is-rounded" href="{% url 'account_signup' %}">Sign Up</a></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
 <div class="container">
+
     {% block body %}
         {% include "messages.html" %}
-
-        <div class="content">
-            <strong>Menu:</strong>
-            <ul>
-                <li><a href="/">Home</a></li>
-
-                {% if user.is_authenticated %}
-                    {#<li><a href="{% url 'account_email' %}">Change E-mail</a></li>#}
-                    <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
-                    <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
-                    <li><a href="{% url 'webtoonList:subscribe_list' %}">Subscribes</a></li>
-                    <li><a href="{% url 'accounts:user_list' %}">User List</a></li>
-                {% else %}
-                    <li><a href="{% url 'account_login' %}">Sign In</a></li>
-                    <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-                {% endif %}
-                {#<li><a href="{% url 'accounts:reset' %}">Reset</a></li>#}
-                <li><a href="{% url 'webtoonList:random' %}">무작위 웹툰 평가하러 가기</a></li>
-                <li>검색하기
-                    <form method="GET" action="{% url 'webtoonList:search' %}">
-                        <input type="text" name="keyword">
-                        <input type="submit" value="search">
-                    </form>
-                </li>
-            </ul>
-            <br>
-        </div>
-
+        <!-- <li><a href="{% url 'contentsApp:random' %}">무작위 웹툰 평가하러 가기</a></li> -->
         {% block content %}
-        {% endblock %}
-        {% block content_c %}
         {% endblock %}
     {% endblock %}
     {% block extra_body %}
+
     {% endblock %}
 </div>
+
 </body>
+
 </html>

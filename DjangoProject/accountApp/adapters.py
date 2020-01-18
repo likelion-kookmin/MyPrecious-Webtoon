@@ -23,4 +23,3 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         print(sociallogin.account.extra_data)
         user = User.objects.create_kakao_user(user_pk=user.pk, extra_data=extra_data)
         return user
-

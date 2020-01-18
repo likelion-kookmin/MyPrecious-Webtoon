@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container" style="margin-top:70px;margin-bottom:200px;">
+  <div class="card row-md-4" >
+    <div class="cardsignup">
+      <div class="row no-gutters" style=>
+        <div class="col-md-6" style="background-color: #E0AD6B;">
+          <div style="text-align:center;margin-top:250px;">
+            <h1 class="title is-3" style="color:white;"><b>MY PRECIOUS</b></h1>
+            <h1 class="title is-1" style="color:white;"><b>WEBTOON</b></h1>
+          </div> 
+        </div>
+        <div class="col-md-6" >
+          <div class="card-body"style="background-color: hsl(217, 71%, 53%);height:100%;">
+            <div class="container" style="margin-top:23px;">
+              <div style="text-align: left;">
+                <h1 class="title is-2" style="color:white;"><b>SIGN UP</b><br><br><br></h1>
+              </div>
+              <br><br><br>
+              <form class="signup" method="POST" action="{% url 'account_signup' %}">
+                <div class="container title is-5" style="text-align: left;color:white;font-size: large;">
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  {% if redirect_field_value %}
+                  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                  {% endif %}
+                  <br>
+                  <p>이미 계정이 있으신가요? <span style="color:yellow;"><a style="all:unset;" href="{{ login_url }}">
+                        로그인하러가기</a></span></p>
+                  <br><button class="button is-link is-rounded is-inverted is-outlined"
+                    type="submit">{% trans "Sign Up" %} </button>
+                    <br>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    div {
+      text-align: center;
+    }
+
+    .cardsignup {
+      height: 600px;
+
+
+    }
+  </style>
+
+  {% endblock %}

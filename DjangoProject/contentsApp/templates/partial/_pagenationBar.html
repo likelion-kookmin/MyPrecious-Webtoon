@@ -1,0 +1,36 @@
+<div style="text-align: center; margin-bottom:30px;">
+    {% if list_object %}
+        {% if list_object.has_previous %}
+            <span class="button is-link">
+                <a style="all:unset" href="?page=1&keyword={{ keyword }}&type={{ type }}">맨 앞으로</a>
+            </span>
+            <span class="button is-link">
+                <a style="all:unset"
+                   href="?page={{ list_object.previous_page_number }}&keyword={{ keyword }}&type={{ type }}">
+                    이전으로
+                </a>
+            </span>
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>{{ list_object.number }}</span>
+        <span>/</span>
+        <span>{{ list_object.paginator.num_pages }}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {% if list_object.has_next %}
+            <span class="button is-link">
+                <a style="all:unset"
+                   href="?page={{ list_object.next_page_number }}&keyword={{ keyword }}&type={{ type }}">
+                    다음으로
+                </a>
+            </span>
+        {% endif %}
+        {% if list_object.has_previous %}
+            <span class="button is-link">
+                <a style="all:unset"
+                   href="?page={{ list_object.paginator.num_pages }}&keyword={{ keyword }}&type={{ type }}">
+                    맨 뒤로
+                </a>
+            </span>
+        {% endif %}
+    {% endif %}
+</div>
